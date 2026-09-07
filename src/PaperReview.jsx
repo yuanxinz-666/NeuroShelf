@@ -1,3 +1,4 @@
+import { t, tx, te, dateLocale } from './i18n';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Check, LoaderCircle } from 'lucide-react';
 import { registerDraftFlusher } from './persistence';
@@ -37,14 +38,14 @@ export default function PaperReview({ paper, update }) {
     setValue(next); draft.current = { personalReview: next }; setState('pending');
     clearTimeout(timer.current); timer.current = setTimeout(() => flush().catch(() => {}), 450);
   }
-  const label = { idle: '', pending: '待保存', saving: '保存中', saved: '已保存', error: '保存失败，点击重试' }[state];
+  const label = { idle: '', pending: t("待保存"), saving: t("保存中"), saved: t("已保存"), error: t("保存失败，点击重试") }[state];
   return <div className={`paper-review ${state === 'error' ? 'review-error' : ''}`} data-paper-id={paper.id} data-save-state={state}>
-    <label htmlFor={`personal-review-${paper.id}`}>我的评价</label>
-    <input id={`personal-review-${paper.id}`} aria-label={`我的评价：${paper.title}`} maxLength={500}
-      placeholder="写一句，方便下次找回…" value={value} title={value || '直接填写，自动保存；也可以按评价搜索论文'}
+    <label htmlFor={`personal-review-${paper.id}`}>{t("我的评价")}</label>
+    <input id={`personal-review-${paper.id}`} aria-label={tx`我的评价：${paper.title}`} maxLength={500}
+      placeholder={t("写一句，方便下次找回…")} value={value} title={value || t("直接填写，自动保存；也可以按评价搜索论文")}
       onChange={event => change(event.target.value)} onBlur={() => flush().catch(() => {})}
       onKeyDown={event => { if (event.key === 'Enter' && !event.nativeEvent.isComposing && event.keyCode !== 229) { event.preventDefault(); event.currentTarget.blur(); } }} />
-    {state === 'error' ? <button className="review-retry" title={label} onClick={() => flush().catch(() => {})}>重试</button>
+    {state === 'error' ? <button className="review-retry" title={label} onClick={() => flush().catch(() => {})}>{t("重试")}</button>
       : <span className="review-save" role="status" aria-label={label} title={label}>{state === 'saving' ? <LoaderCircle size={12} className="spin" /> : state === 'saved' ? <Check size={12} /> : null}</span>}
   </div>;
 }

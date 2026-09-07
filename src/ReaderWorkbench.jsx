@@ -1,3 +1,4 @@
+import { t, tx, te, dateLocale } from './i18n';
 import React, { useEffect, useRef, useState } from 'react';
 
 const WIDTH_KEY = 'neuroshelf:reader-sidebar-width';
@@ -25,7 +26,7 @@ export default function ReaderWorkbench({ children, sidebar }) {
   }
   return <div ref={root} className={`reader-workbench ${dragging ? 'resizing' : ''}`} style={{ gridTemplateColumns: `minmax(0, 1fr) 9px ${width}px` }}>
     {children}
-    <div className="reader-resizer" role="separator" tabIndex={0} aria-label="调整阅读边栏宽度" aria-orientation="vertical" aria-valuemin={320} aria-valuemax={maximum} aria-valuenow={width} title="拖动调整边栏宽度 · 双击恢复默认宽度" onPointerDown={event => {
+    <div className="reader-resizer" role="separator" tabIndex={0} aria-label={t("调整阅读边栏宽度")} aria-orientation="vertical" aria-valuemin={320} aria-valuemax={maximum} aria-valuenow={width} title={t("拖动调整边栏宽度 · 双击恢复默认宽度")} onPointerDown={event => {
       if (event.button !== 0) return;
       event.preventDefault(); event.currentTarget.focus(); event.currentTarget.setPointerCapture(event.pointerId);
       drag.current = { x: event.clientX, width }; setDragging(true);

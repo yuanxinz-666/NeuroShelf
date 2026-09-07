@@ -6,6 +6,12 @@ const { LibraryStore } = require('./store.cjs');
 const { buildRequest, streamResponse } = require('./ai.cjs');
 const { CodexReader } = require('./codex.cjs');
 const { migrateSettings, nextSettings } = require('./ai-settings.cjs');
+const { Preferences, responseLanguage } = require('./preferences.cjs');
+const { createTranslator } = require('../data/locales/core.mjs');
+const translator = createTranslator(require('../data/locales/en.json'));
+let uiPreferences;
+const tr = (text, ...values) => translator.translate(uiPreferences?.get().locale || 'en', text, ...values);
+const localError = text => translator.message(uiPreferences?.get().locale || 'en', text);
 const READING_MODEL = require('../data/ai-model.json');
 const { syncInbox } = require('./weekly.cjs');
 const { ProjectManager } = require('./projects.cjs');
@@ -32,9 +38,10 @@ const publicSettings = () => ({ provider: prefs.provider, model: READING_MODEL.i
 const safeError = e => String(e?.message || '操作失败，请重试。').replace(/sk-[a-zA-Z0-9_-]+/g, '[已隐藏]');
 function register(channel, handler) {
   ipcMain.handle(channel, async (event, scopeId, ...args) => {
-    if (!win || event.sender !== win.webContents || event.senderFrame !== win.webContents.mainFrame || !event.senderFrame.url.startsWith('neuroshelf://app/')) throw new Error('无效的请求来源。');
-    if (switching || scopeId !== projects.index.activeId) throw new Error('项目已切换，请在当前项目重试。');
-    return projectScope.run(projects.get(scopeId), () => handler(...args));
+    if (!win || event.sender !== win.webContents || event.senderFrame !== win.webContents.mainFrame || !event.senderFrame.url.startsWith('neuroshelf://app/')) throw new Error(tr('无效的请求来源。'));
+    if (switching || scopeId !== projects.index.activeId) throw new Error(tr('项目已切换，请在当前项目重试。'));
+    try { return await projectScope.run(projects.get(scopeId), () => handler(...args)); }
+    catch (error) { throw new Error(localError(safeError(error))); }
   });
 }
 function httpsUrl(value) {
@@ -45,6 +52,8 @@ function httpsUrl(value) {
 }
 async function initialize() {
   if (process.argv.includes('--smoke-test') && !process.env.NEUROSHELF_DATA_DIR) throw new Error('桌面测试必须指定隔离资料目录。');
+  uiPreferences = new Preferences(app.getPath('userData'));
+  await uiPreferences.init();
   projects = new ProjectManager({ userData: app.getPath('userData'), seedPath: path.join(app.getAppPath(), 'data/library.json') });
   await projects.init();
   const seedPeople = require('../data/sc-snr-people.json');
@@ -79,7 +88,7 @@ async function initialize() {
   register('people:update', (id, patch) => getStore().updatePerson(id, patch));
   register('people:research', (piId, mode = 'dossier') => { if (!['dossier', 'bibliography'].includes(mode)) throw new Error('档案更新类型无效。'); return research.start(getContext(), mode, prefs.effort, { piId }); });
   register('people:rankings', async () => {
-    const result = await dialog.showOpenDialog(win, { title: '导入学校获取的期刊分区表', filters: [{ name: '期刊分区数据', extensions: ['json', 'csv'] }], properties: ['openFile'] });
+    const result = await dialog.showOpenDialog(win, { title: tr("导入学校获取的期刊分区表"), filters: [{ name: tr("期刊分区数据"), extensions: ['json', 'csv'] }], properties: ['openFile'] });
     if (result.canceled) return null;
     const file = result.filePaths[0]; if ((await fs.stat(file)).size > 16 * 1024 * 1024) throw new Error('分区表不能超过 16 MB。');
     const bytes = await fs.readFile(file), text = bytes[0] === 0xff && bytes[1] === 0xfe ? bytes.subarray(2).toString('utf16le') : bytes.toString('utf8');
@@ -116,7 +125,7 @@ async function initialize() {
   register('library:load', () => getStore().get());
   register('library:update', (id, patch) => getStore().update(id, patch));
   register('library:highlight', (id, change) => getStore().mutateHighlight(id, change));
-  register('experiments:change', change => getStore().changeExperiment(change));
+  register('experiments:change', change => getStore().changeExperiment(change?.action === "add" && !change.title ? { ...change, title: tr("新的实验步骤") } : change));
   register('experiments:image-import', payload => {
     const bytes = Buffer.from(payload.bytes);
     require('./experiments.cjs').verifyImage(bytes);
@@ -131,19 +140,21 @@ async function initialize() {
   register('pdf:read', id => getStore().readPdf(id));
   register('pdf:detach', id => getStore().detachPdf(id));
   register('backup:export', async () => {
-    const result = await dialog.showOpenDialog(win, { title: '选择完整备份的保存位置', properties: ['openDirectory', 'createDirectory'] });
+    const result = await dialog.showOpenDialog(win, { title: tr("选择完整备份的保存位置"), properties: ['openDirectory', 'createDirectory'] });
     if (result.canceled) return null;
     const destination = await getStore().backup(result.filePaths[0]);
     shell.showItemInFolder(path.join(destination, 'library.json'));
     return destination;
   });
   register('backup:restore', async () => {
-    const result = await dialog.showOpenDialog(win, { title: '选择备份文件夹中的 library.json', filters: [{ name: 'NeuroShelf 备份', extensions: ['json'] }], properties: ['openFile'] });
+    const result = await dialog.showOpenDialog(win, { title: tr("选择备份文件夹中的 library.json"), filters: [{ name: tr("NeuroShelf 备份"), extensions: ['json'] }], properties: ['openFile'] });
     if (result.canceled) return null;
     return getStore().restore(result.filePaths[0]);
   });
   register('backup:legacy', raw => getStore().importLegacy(raw));
   register('settings:get', () => publicSettings());
+  register('preferences:get', () => uiPreferences.get());
+  register('preferences:save', async patch => { const result = await uiPreferences.update(patch); if (win) win.setTitle(result.locale === 'zh-CN' ? 'NeuroShelf · 神经文献' : 'NeuroShelf · Research workspace'); return result; });
   register('codex:status', async () => { await codex.status(); return publicSettings(); });
   register('codex:login', async () => { const result = await codex.login(); await shell.openExternal(result.url); return true; });
   register('settings:save', async value => {
@@ -174,7 +185,8 @@ async function initialize() {
     if (!['codex', 'api'].includes(provider)) throw new Error('当前使用手动复制，请点击「复制问题与上下文」。');
     if (provider === 'api' && !prefs.encryptedKey) throw new Error('请先在设置中连接 OpenAI API。');
     const paper = getStore().find(payload.paperId);
-    const request = buildRequest(payload, paper, effort);
+    const answerLanguage = responseLanguage(uiPreferences.get(), payload.answerLanguage);
+    const request = buildRequest(payload, paper, effort, answerLanguage);
     let key;
     try { if (provider === 'api') key = safeStorage.decryptString(Buffer.from(prefs.encryptedKey, 'base64')); }
     catch { throw new Error('无法解密密钥，请在本机重新填写 API Key。'); }
@@ -194,12 +206,12 @@ async function initialize() {
         const updated = await getStore().update(paper.id, { messages: [...current.messages, { id: payload.requestId + '_a', role: 'assistant', content, page: payload.page, model, effort, provider, createdAt: new Date().toISOString() }] });
         send({ type: 'done', paper: updated });
       } catch (e) {
-        const message = controller.signal.aborted ? (controller.signal.reason === 'timeout' ? '等待超时，请稍后重试。' : '已停止生成。') : safeError(e);
+        const message = localError(controller.signal.aborted ? (controller.signal.reason === 'timeout' ? '等待超时，请稍后重试。' : '已停止生成。') : safeError(e));
         try {
           const current = getStore().find(paper.id);
           const updated = await getStore().update(paper.id, { messages: [...current.messages, { id: payload.requestId + '_a', role: 'assistant', content: partial ? partial + '\n\n' + message : message, error: true, page: payload.page, model, effort, provider, createdAt: new Date().toISOString() }] });
           send({ type: 'error', error: message, paper: updated });
-        } catch { send({ type: 'error', error: message + ' 本次对话保存失败，请复制保留。' }); }
+        } catch { send({ type: 'error', error: message + tr(' 本次对话保存失败，请复制保留。') }); }
       } finally { clearTimeout(timer); activeRequests.delete(payload.requestId); key = null; }
     })();
     activeTasks.add(task);
@@ -208,7 +220,7 @@ async function initialize() {
   });
   Menu.setApplicationMenu(null);
   win = new BrowserWindow({ width: 1500, height: 980, minWidth: 1060, minHeight: 720,
-    title: 'NeuroShelf · 神经文献', icon: path.join(app.getAppPath(), 'build/icon.ico'), backgroundColor: '#f7f8f6', show: false,
+    title: uiPreferences.get().locale === 'zh-CN' ? 'NeuroShelf · 神经文献' : 'NeuroShelf · Research workspace', icon: path.join(app.getAppPath(), 'build/icon.ico'), backgroundColor: '#f7f8f6', show: false,
     webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, sandbox: true, nodeIntegration: false, webSecurity: true, spellcheck: false } });
   win.webContents.setWindowOpenHandler(({ url }) => {
     try { shell.openExternal(httpsUrl(url)).catch(() => {}); } catch {}
@@ -218,11 +230,12 @@ async function initialize() {
   win.webContents.on('will-attach-webview', event => event.preventDefault());
   ipcMain.on('app:close-ready', async (event, ok) => {
     if (!win || event.sender !== win.webContents || event.senderFrame !== win.webContents.mainFrame) return;
-    if (!ok) { closePending = false; dialog.showErrorBox('笔记尚未保存', '保存失败，窗口保持打开。请先复制笔记或重试保存。'); return; }
+    if (!ok) { closePending = false; dialog.showErrorBox(tr('笔记尚未保存'), tr('保存失败，窗口保持打开。请先复制笔记或重试保存。')); return; }
     for (const controller of activeRequests.values()) controller.abort();
     await Promise.allSettled([...activeTasks]);
     await research.close();
     await getStore().queue;
+    await uiPreferences.queue;
     closeApproved = true;
     win?.close();
   });
@@ -237,6 +250,11 @@ async function initialize() {
   if (process.argv.includes('--smoke-test')) {
     // The smoke test only inspects our own packaged renderer and bridge; no user browser state.
     await new Promise(resolve => setTimeout(resolve, 1800));
+    const languageWaitFor = async condition => {
+      for (let tries = 0; tries < 100; tries++) { if (await win.webContents.executeJavaScript(condition)) return; await new Promise(resolve => setTimeout(resolve, 100)); }
+      throw new Error('Language UI condition timed out: ' + condition);
+    };
+    const languageChecks = await require('./language-smoke.cjs').runLanguageSmoke({ win, directory: app.getPath('userData'), waitFor: languageWaitFor });
     const result = await win.webContents.executeJavaScript(`(async()=>({title:document.title, text:document.body.innerText, bridge:Boolean(window.neuroshelf), keyExposed:'key' in await window.neuroshelf.settings()}))()`);
     await win.webContents.executeJavaScript(`window.neuroshelf.copyText('NeuroShelf clipboard verification')`);
     if (clipboard.readText() !== 'NeuroShelf clipboard verification') throw new Error('Desktop clipboard test failed.');
@@ -271,7 +289,7 @@ async function initialize() {
       console.log('PDF_RENDER_OK: local PDF bytes, worker, canvas and selectable text work in the desktop app.');
       const shortcuts = await require('./shortcut-smoke.cjs').runShortcutSmoke({ win, store: getStore(), waitFor, register, codex, getEffort: () => prefs.effort });
       const readerChecks = await require('./reader-smoke.cjs').runReaderSmoke({ win, store: getStore(), waitFor, directory: app.getPath('userData') });
-      await fs.writeFile(path.join(app.getPath('userData'), 'smoke-result.json'), JSON.stringify({ bridge: true, papers: 107, pdfRendered: true, clipboard: true, ...shortcuts, ...readerChecks, ...weeklyChecks, ...projectChecks, ...reviewChecks, ...experimentChecks }));
+      await fs.writeFile(path.join(app.getPath('userData'), 'smoke-result.json'), JSON.stringify({ bridge: true, papers: 107, pdfRendered: true, clipboard: true, ...languageChecks, ...shortcuts, ...readerChecks, ...weeklyChecks, ...projectChecks, ...reviewChecks, ...experimentChecks }));
       await win.webContents.executeJavaScript(`[...document.querySelectorAll('.document-tabs button')].find(b=>b.textContent.includes('我的笔记')).click()`);
       await waitFor(`Boolean(document.querySelector('textarea[aria-label="论文笔记"]'))`);
       await win.webContents.executeJavaScript(`(()=>{const input=document.querySelector('textarea[aria-label="论文笔记"]');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(input,'Desktop close flush sentinel');input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
@@ -292,7 +310,7 @@ app.whenReady().then(initialize).catch(async error => {
     try { await fs.writeFile(path.join(app.getPath('userData'), 'smoke-error.txt'), safeError(error), 'utf8'); } catch {}
     try { await fs.writeFile(path.join(app.getPath('userData'), 'desktop-error.png'), (await win.webContents.capturePage()).toPNG()); } catch {}
   }
-  if (!process.argv.includes('--smoke-test')) dialog.showErrorBox('NeuroShelf 启动失败', safeError(error));
+  if (!process.argv.includes('--smoke-test')) dialog.showErrorBox(tr('NeuroShelf 启动失败'), localError(safeError(error)));
   app.exit(1);
 });
 app.on('window-all-closed', () => app.quit());

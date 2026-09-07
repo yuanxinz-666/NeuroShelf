@@ -75,6 +75,11 @@ async function runExperimentsSmoke({ win, projects, waitFor, directory }) {
   await waitFor(`document.querySelector('.exp-evidence img')?.naturalWidth === 640`);
   await run(`document.querySelector('button[aria-label="适应实验导图"]').click()`); await tick();
   await fs.writeFile(path.join(directory, 'desktop-experiments.png'), (await win.webContents.capturePage()).toPNG());
+  await run(`(() => { const input = document.querySelector('select[aria-label="Interface language / 界面语言"]'); input.value = 'en'; input.dispatchEvent(new Event('change', { bubbles: true })); })()`);
+  await waitFor(`document.documentElement.lang === 'en' && !document.querySelector('select[aria-label="Interface language / 界面语言"]').disabled`);
+  await fs.writeFile(path.join(directory, 'desktop-experiments-english.png'), (await win.webContents.capturePage()).toPNG());
+  await run(`(() => { const input = document.querySelector('select[aria-label="Interface language / 界面语言"]'); input.value = 'zh-CN'; input.dispatchEvent(new Event('change', { bubbles: true })); })()`);
+  await waitFor(`document.documentElement.lang === 'zh-CN' && !document.querySelector('select[aria-label="Interface language / 界面语言"]').disabled`);
   await run(`document.querySelector('.exp-editor-body').scrollTop = document.querySelector('.exp-editor-body').scrollHeight`); await tick();
   await fs.writeFile(path.join(directory, 'desktop-experiments-evidence.png'), (await win.webContents.capturePage()).toPNG());
   await run(`document.querySelector('.exp-editor-body').scrollTop = 0`); await tick();

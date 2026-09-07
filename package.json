@@ -1,8 +1,8 @@
 {
   "name": "neuroshelf",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "private": true,
-  "description": "按项目组织论文、PDF、笔记、PI 动态与实验进程的研究工作台",
+  "description": "A research workspace for papers, PDFs, notes, PI profiles and experiment progress",
   "author": "NeuroShelf",
   "main": "electron/main.cjs",
   "scripts": {

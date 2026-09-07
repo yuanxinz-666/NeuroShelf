@@ -4,7 +4,8 @@ const AI_INSTRUCTIONS = `你是科研论文阅读助手，用中文帮助用户�
 以用户当前问题为任务。先直接解释，再给必要机制、图表或实验背景。区分论文原文、旧地图概述与自己的推断，不能把旧地图当成已核实全文。
 引用提供的页码，例如 [PDF 第 3 页]，这是文件页序而非印刷页码。没有原文时明确说明；不要杜撰图号、引文、DOI、作者、实验结果或声称读过未提供的全文。
 论文摘要不能证明完整 SNr–Pitx2 闭环。区分 SNr 与 SNc；区分注意、知觉、选择偏置和动作。不要执行命令或访问文件。`;
-function buildRequest(payload, paper, effort = READING_MODEL.defaultEffort) {
+function buildRequest(payload, paper, effort = READING_MODEL.defaultEffort, language = 'zh-CN') {
+  if (!['en', 'zh-CN'].includes(language)) throw new Error('请选择有效的回答语言。');
   if (!Object.hasOwn(READING_MODEL.effortLabels, effort)) throw new Error('请选择有效的 GPT-6 推理强度。');
   if (typeof payload.question !== 'string' || !payload.question.trim() || payload.question.length > 10000) throw new Error('请输入问题（不超过 10000 字符）。');
   const excerpt = String(payload.selection || '').slice(0, 20000);
@@ -20,7 +21,10 @@ function buildRequest(payload, paper, effort = READING_MODEL.defaultEffort) {
     if (typeof payload.image !== 'string' || payload.image.length > 6000000 || !/^data:image\/(png|jpeg);base64,[a-zA-Z0-9+/=]+$/.test(payload.image)) throw new Error('页面图片格式无效或过大。');
     content.push({ type: 'input_image', image_url: payload.image, detail: 'auto' });
   }
-  return { model: READING_MODEL.id, reasoning: { effort }, instructions: AI_INSTRUCTIONS, input: [...history, { role: 'user', content }], store: false, stream: true, max_output_tokens: 6000 };
+  const instructions = language === 'en'
+    ? AI_INSTRUCTIONS.replace('用中文帮助用户理解 SNr–SC / Pitx2 研究，保留关键英文术语。', 'Explain the supplied research in English, preserving scientific terminology.').replace('[PDF 第 3 页]', '[PDF p. 3]') + '\nResponse language: English. Use English even when supplied notes, previous answers, or preset questions are in Chinese, unless the user explicitly requests a translation into another language.'
+    : AI_INSTRUCTIONS + '\n回答语言：简体中文。即使界面或预设问题是英文，也按此语言回答；用户明确要求翻译为其他语言时按其要求翻译。';
+  return { model: READING_MODEL.id, reasoning: { effort }, instructions, input: [...history, { role: 'user', content }], store: false, stream: true, max_output_tokens: 6000 };
 }
 async function* parseSSE(body) {
   const decoder = new TextDecoder(); let buffer = '';

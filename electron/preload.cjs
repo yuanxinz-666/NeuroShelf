@@ -15,6 +15,7 @@ contextBridge.exposeInMainWorld('neuroshelf', {
   importPdf: call('pdf:import'), readPdf: call('pdf:read'), detachPdf: call('pdf:detach'),
   backup: call('backup:export'), restore: call('backup:restore'), importLegacy: call('backup:legacy'),
   settings: call('settings:get'), saveSettings: call('settings:save'),
+  preferences: call('preferences:get'), savePreferences: call('preferences:save'),
   codexStatus: call('codex:status'), codexLogin: call('codex:login'),
   openExternal: call('external:open'), openData: call('data:open'), copyText: call('clipboard:write'),
   ask: call('ai:ask'), cancelAsk: call('ai:cancel'),

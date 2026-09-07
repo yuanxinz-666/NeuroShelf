@@ -82,6 +82,8 @@ async function runShortcutSmoke({ win, store, waitFor, register, codex, getEffor
   await switchEffort('high');
   console.log('REASONING_EFFORT_OK: GPT-6 stays fixed; selected effort reaches requests and saved messages, including in-flight switching.');
 
+  await require('./language-ai-smoke.cjs').runLanguageAiSmoke({ run, waitFor, select, space, codex, store });
+
   await run(`document.querySelector('button[aria-label="AI 设置"]').click()`);
   await waitFor(`Boolean(document.querySelector('dialog[open] .provider-choices'))`);
   await run(`[...document.querySelectorAll('.provider-choices button')].find(b => b.textContent.includes('API')).click()`);

@@ -1,7 +1,8 @@
+import { t } from './i18n';
 import model from '../data/ai-model.json';
 
 export { model };
-export const effortLabel = effort => model.effortLabels[effort] || effort;
+export const effortLabel = effort => t(model.effortLabels[effort] || effort);
 export function supportedEfforts(settings, provider = settings.provider) {
   if (provider === 'api') return model.apiEfforts;
   if (provider !== 'codex') return [];

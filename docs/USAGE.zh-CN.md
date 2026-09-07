@@ -1,8 +1,20 @@
-# NeuroShelf 0.7.1 使用说明
+# NeuroShelf 0.8.0 使用说明
+
+[English](USAGE.en.md) · **简体中文** · [项目首页](../README.zh-CN.md)
+
+## 界面与回答语言
+
+首次打开时默认英文。顶部的 **English / 简体中文** 菜单可随时切换；选择后自动保存，在同一 Windows 用户配置下重启、升级和切换项目都会保留，不需要每次重新设置。
+
+在 **Settings & AI → Language（设置与 AI 连接 → 语言）** 中也能切换，并单独选择 **AI response language / AI 回答语言**：跟随界面、English 或简体中文。例如可以使用英文界面，同时让 AI 用中文解释论文。
+
+切换语言不会关闭当前页面，也不会翻译或覆盖现有的论文原文、导读、评价、笔记和实验记录。文献导读中的 **Translate guide into English / 翻译导读为英文** 按钮会请求当前 AI 连接在侧栏中生成译文，原始导读不变；仅这次翻译指定英文，不更改平时的回答语言。
+
+语言偏好保存在本机 `%APPDATA%\NeuroShelf\preferences.json`，与文库和 AI 登录设置分开。它随当前 Windows 配置保留，不包含在单个项目的文库备份中。
 
 ## 打开与升级
 
-从 [官方仓库 Releases](https://github.com/yuanxinz-666/NeuroShelf/releases) 下载 `NeuroShelf-0.7.1-Windows.exe`。这是 Windows x64 免安装版，将文件放在固定位置后双击运行。第一次打开会先解包，后续的文库保存在本机应用数据目录。
+从 [官方仓库 Releases](https://github.com/yuanxinz-666/NeuroShelf/releases) 下载 `NeuroShelf-0.8.0-Windows.exe`。这是 Windows x64 免安装版，将文件放在固定位置后双击运行。第一次打开会先解包，后续的文库保存在本机应用数据目录。
 
 需要桌面入口时，可以右键 EXE，在 Windows 的“显示更多选项 → 发送到 → 桌面快捷方式”中创建。已有的开发目录快捷方式可以继续使用，不必重复导入文库。
 
@@ -87,7 +99,7 @@ resources/                补充资料
 发布页同时提供 `SHA256SUMS.txt`，可在 PowerShell 中计算并对照：
 
 ```powershell
-Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.7.1-Windows.exe'
+Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.8.0-Windows.exe'
 ```
 
 遇到问题请在 [GitHub Issues](https://github.com/yuanxinz-666/NeuroShelf/issues) 说明版本、操作步骤和错误提示。截图与日志如包含个人笔记或研究数据，请先自行去除再公开。

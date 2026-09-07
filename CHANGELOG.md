@@ -1,5 +1,17 @@
 # 更新记录
 
+## 0.8.0 · 2026-09-07
+
+English and Simplified Chinese now share one Windows app. The first launch defaults to English; a user's choice persists across restarts, updates and project switches. AI response language can be selected independently, and reading guides can be translated into English in the sidebar without changing their source text. The repository now has an English homepage and bilingual user guides.
+
+- 加入完整的中英文界面切换，首次默认英文，用户修改后保存到本机独立偏好文件。
+- 重启、升级和切换项目后保留语言选择；即时切换不关闭当前页面或丢失编辑草稿。
+- AI 回答语言可跟随界面，也可固定为英文或简体中文。
+- 文献导读可在 AI 侧栏生成英文译文，原始导读与已有研究内容保持原样。
+- 翻译导航、阅读器、实验进程、PI 档案、候选论文、提示与导出标题。
+- GitHub 默认 README 改为英文，同时提供 README.zh-CN.md 和中英文使用说明。
+- 新增语言持久化、失败写入、回答语言与桌面交互验证。
+
 ## 0.7.1 · 2026-09-07
 
 本次对外发布 Windows 科研工作台，汇集项目文库、PDF 精读、PI 档案和实验进程。

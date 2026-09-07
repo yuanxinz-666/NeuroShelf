@@ -1,53 +1,64 @@
-# NeuroShelf · 神经文献
+# NeuroShelf
 
-**把论文、理解和实验进展放进同一个研究项目。**
+**English** · [简体中文](README.zh-CN.md)
 
-NeuroShelf 是一款中文 Windows 科研工作台。从 SC–SNr / Pitx2 文献地图出发，逐步扩展为项目文库、PDF 精读、AI 阅读助手、PI 档案和实验记录工具。可以为其他研究问题新建独立项目。
+**Keep papers, reading notes and experiment progress in one research project.**
 
-[下载 Windows 0.7.1](https://github.com/yuanxinz-666/NeuroShelf/releases/download/v0.7.1/NeuroShelf-0.7.1-Windows.exe) · [全部发布版本](https://github.com/yuanxinz-666/NeuroShelf/releases) · [使用说明](docs/USAGE.zh-CN.md) · [反馈问题](https://github.com/yuanxinz-666/NeuroShelf/issues)
+NeuroShelf is a Windows research workspace with English and Simplified Chinese interfaces. It grew from an SC–SNr / Pitx2 literature map into a project library, PDF reader, AI reading assistant, PI directory and experiment notebook. Create separate projects for other research questions.
 
-## 从阅读到实验
+[Download for Windows · 0.8.0](https://github.com/yuanxinz-666/NeuroShelf/releases/download/v0.8.0/NeuroShelf-0.8.0-Windows.exe) · [All releases](https://github.com/yuanxinz-666/NeuroShelf/releases) · [User guide](docs/USAGE.en.md) · [Report an issue](https://github.com/yuanxinz-666/NeuroShelf/issues)
 
-| 工作 | NeuroShelf 提供的功能 |
+## From reading to experiments
+
+| Task | What NeuroShelf provides |
 | --- | --- |
-| 管理项目 | 每个项目保存研究问题、关键词、文库、候选论文、PI 和实验进程 |
-| 找回论文 | 标签、收藏、阅读状态、全文关联；论文卡片下方可写一句个人评价，并通过评价搜索 |
-| 精读 PDF | 批量导入、可选择文字的阅读器、高亮旁注、笔记、阅读位置保存 |
-| 随手问 AI | 选中 PDF 原文后按空格提问；可调整侧栏宽度与字号；GPT-6 推理强度切换 |
-| 发现新论文 | 项目调研和每周候选收件箱，先审核再加入正式文库 |
-| 了解 PI | 详细介绍、近十年发表图表、关键词、CNS、两种一区口径、学术关系和资助来源 |
-| 跟踪实验 | 树形思维导图与步骤列表，状态、日期、记录、下一步、图片证据、归档恢复 |
-| 保存积累 | 自动保存；按项目导出完整文库备份，包含 PDF 和实验图片；导出 Markdown |
+| Organize projects | A research question, keywords, paper library, candidate inbox, PIs and experiments for each project |
+| Find a paper again | Tags, favorites, reading status and a searchable personal review below each paper card |
+| Read PDFs | Batch import, selectable text, highlights with margin comments, notes and saved reading position |
+| Ask while reading | Select PDF text and press Space; resize the AI sidebar, adjust its font size and choose GPT-6 reasoning effort |
+| Discover papers | Project research and a weekly candidate inbox; review suggestions before adding them to the library |
+| Explore PIs | Profiles, ten-year publication charts, keywords, CNS counts, two journal ranking systems, academic relationships and funding sources |
+| Track experiments | A tree-shaped mind map and step list, status, dates, records, next actions, image evidence, archiving and restoration |
+| Keep your work | Autosave, per-project backups including PDFs and evidence images, and Markdown export |
+| Choose your language | English by default, a remembered Chinese/English choice and a separate AI response language |
 
-### 实验进程
+### Experiment progress
 
-把研究问题拆成实验和子步骤，点击节点查看记录与证据图片。完成、进行中、待开始和受阻状态汇总到项目中。
+Break a research question into experiments and substeps. Open a node to review its records and evidence images, and follow its progress from planned to in progress, completed or blocked.
 
-![实验进程思维导图，内容为测试演示数据](docs/screenshots/experiments.png)
+![Experiment mind map in English, showing an isolated test project](docs/screenshots/experiments-en.png)
 
-### 文库与个人评价
+### Paper library and personal reviews
 
-在卡片底部留下一句自己的判断，下次可以直接搜索到。
+Leave a short personal assessment below a paper, then search for that assessment when you need the paper again.
 
-![论文列表与个人评价，内容为测试演示数据](docs/screenshots/library.png)
+![English paper library with original-language sample reading guides](docs/screenshots/library-en.png)
 
-截图来自隔离测试文库，含模拟条目与记录。公开版本内置 107 篇 SC–SNr 示例文献的元数据和导读，不附带论文 PDF、个人笔记或实验数据。
+Screenshots use an isolated test library. The public app includes metadata and reading guides for 107 SC–SNr sample papers. Paper PDFs, personal notes and experiment data are not bundled. Original sample guides are in Chinese and can be translated on request through the AI sidebar.
 
-## 在 Windows 上使用
+## English and Chinese in the same app
 
-1. 从 [Releases](https://github.com/yuanxinz-666/NeuroShelf/releases/latest) 下载 `NeuroShelf-0.7.1-Windows.exe`，放到一个固定文件夹后双击打开。
-2. 打开示例项目，或通过侧栏新建项目。将自己下载的 PDF 导入并关联到对应论文。
-3. 在“设置与 AI 连接”中选择连接方式；本地阅读、笔记和实验记录可以独立使用。
+The first launch defaults to **English**. Use the **English / 简体中文** menu in the top bar to change languages immediately. Your choice is saved for subsequent launches, updates and project switches under the same Windows user profile.
 
-这是 **Windows x64 免安装单文件版**，首次启动需要解包。普通使用无需安装 Node.js 或 Python。发布验证环境为 Windows 11 x64；本次不提供 iPad、macOS 或远程连接版本。
+Under **Settings & AI → Language**, choose whether AI responses follow the interface or always use English or Simplified Chinese. For example, you can keep the interface in English and ask for explanations in Chinese.
 
-AI 连接支持调用本机 Codex 的官方登录，或手动复制阅读上下文到已有助手。模型与推理档位能否使用取决于连接账号实际返回的能力和额度；软件本身不提供模型账号或额度。API 连接是独立选项。详细连接步骤和数据发送范围见[使用说明](docs/USAGE.zh-CN.md)。
+Switching languages preserves the current page and editing drafts. Paper text, titles, existing guides, personal notes, PI records and experiments remain in their original language. **Translate guide into English** generates a translation in the AI sidebar using your configured connection and keeps the original guide intact.
 
-每周候选收件箱和项目开关包含在软件中，**每周一自动执行的调度任务需要在使用者自己的环境另外配置**。下载程序不会自动创建定时任务。
+## Use on Windows
 
-## 从源码运行
+1. Download `NeuroShelf-0.8.0-Windows.exe` from [Releases](https://github.com/yuanxinz-666/NeuroShelf/releases/latest), keep it in a permanent folder and double-click it.
+2. Open the sample project or create your own. Import PDFs you have downloaded and link them to the corresponding papers.
+3. Configure a connection in **Settings & AI** when you want AI assistance. Local reading, notes and experiment records work independently.
 
-开发与打包使用 Windows、Node.js 24 和 pnpm 11。依赖版本由 `pnpm-lock.yaml` 固定。
+This is a **Windows x64 portable executable**. It extracts on launch and does not require Node.js or Python for normal use. The release is validated on Windows 11 x64.
+
+AI connections can use the official login of a locally installed Codex, or you can copy reading context into an existing assistant manually. Model and reasoning availability depend on the capabilities and allowance returned by your connection; NeuroShelf does not supply model access. An API connection is an optional, separate configuration. See the [user guide](docs/USAGE.en.md) for setup and the context sent with a question.
+
+The weekly inbox and project participation settings are included. **Automatic Monday runs require a scheduler configured in your own environment.** Downloading the app does not create a scheduled task.
+
+## Run from source
+
+Development and packaging use Windows, Node.js 24 and pnpm 11. `pnpm-lock.yaml` pins the dependency versions.
 
 ```powershell
 git clone https://github.com/yuanxinz-666/NeuroShelf.git
@@ -58,43 +69,43 @@ pnpm start
 ```
 
 ```powershell
-# 单元测试
+# Unit tests
 pnpm test
 
-# 桌面流程检查：使用隔离测试文库与模拟 AI，不请求真实模型
+# Desktop workflows with an isolated library and mock AI
 pnpm test:desktop
 
-# 生成 release/win-unpacked/NeuroShelf.exe
+# Build release/win-unpacked/NeuroShelf.exe
 pnpm package
 
-# 生成 release/NeuroShelf-0.7.1-Windows.exe
+# Build release/NeuroShelf-0.8.0-Windows.exe
 pnpm dist
 
-# 检查生成的单文件包
-node scripts/smoke-desktop.cjs release/NeuroShelf-0.7.1-Windows.exe
+# Verify the portable executable
+node scripts/smoke-desktop.cjs release/NeuroShelf-0.8.0-Windows.exe
 ```
 
-`pnpm dev` 仅启动前端开发服务器；完整的本地文件、PDF 和 AI 能力请通过 Electron 桌面程序验证。源码运行默认使用同名应用的数据目录；调试时可先设置 `NEUROSHELF_DATA_DIR` 指向临时目录。
+`pnpm dev` runs the frontend preview only. Verify native file, PDF and AI integration in Electron. Source launches use the same application data location by default; set `NEUROSHELF_DATA_DIR` to a temporary directory for isolated development.
 
-## 数据与统计说明
+## Data and research coverage
 
-- 文库和导入文件保存在本机。向 AI 提问时，会发送所选原文、当前页上下文、近期对话及主动附加的图片或相关页。
-- PI 名单、论文检索和公开资助资料均有覆盖范围与核对日期，不表示完整领域覆盖或完整个人业绩。
-- CNS 仅统计 Cell、Nature、Science 本刊。中科院大类一区与 JCR Q1 可切换，需用户导入有年份和来源的分区数据；未知记录保留为未知。
-- 学术师承与人员去向需要来源证据，共同署名本身只作为合作线索。
-- 自动下载失败时，可在有权限的浏览器中下载 PDF 后手动导入。
+- Libraries and imported files are stored locally. AI questions include selected text, page context, recent conversation and any images or related pages you actively attach.
+- PI lists, paper searches and funding records show sources, coverage and verification dates. They are not complete field-wide or individual performance assessments.
+- CNS counts refer to the main journals Cell, Nature and Science. CAS top-level category Tier 1 and JCR Q1 are selectable; import ranking data with a year and source. Unmatched records remain unknown.
+- Mentorship and career destinations require source evidence. Coauthorship alone is treated as a collaboration lead.
+- When automatic PDF retrieval fails, download an accessible copy in your browser and import it manually.
 
-## 目录
+## Source layout
 
 ```text
-src/        React 阅读、文库、PI 和实验界面
-electron/   本地存储、PDF、AI 连接、调研与桌面流程
-data/       公共示例文献、PI 种子与模型配置
-tests/      单元测试与生成式测试素材
-scripts/    构建、桌面验证、项目收件箱工具
-docs/       使用说明、版本说明与演示截图
+src/        React library, reader, PI and experiment interfaces
+electron/   Native storage, PDF handling, AI, research and desktop checks
+data/       Public sample records, model configuration and UI translations
+tests/      Unit tests and generated test fixtures
+scripts/    Build, desktop verification and project inbox tools
+docs/       English/Chinese guides, release notes and demo screenshots
 ```
 
-真实项目目录、PDF、实验图片、账号设置、缓存和构建产物均不进入源码仓库。桌面下载包通过 GitHub Releases 分发。
+See [Localization](docs/LOCALIZATION.md) for the translation workflow. Real project folders, PDFs, evidence images, account settings, caches and build output are excluded from the source repository. Windows binaries are distributed through GitHub Releases.
 
-维护者：[yuanxinz-666](https://github.com/yuanxinz-666)
+Maintainer: [yuanxinz-666](https://github.com/yuanxinz-666)
