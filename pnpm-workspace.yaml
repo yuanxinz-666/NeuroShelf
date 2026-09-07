@@ -1,0 +1,5 @@
+storeDir: .cache/pnpm
+allowBuilds:
+  electron: true
+  esbuild: true
+  electron-winstaller: false

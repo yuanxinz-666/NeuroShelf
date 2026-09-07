@@ -1,0 +1,9 @@
+/* Text-layer geometry adapted from Mozilla PDF.js (Apache-2.0).
+   Keep the viewer's global application styles out of our desktop workspace. */
+.pdf-page .textLayer{color-scheme:only light;--min-font-size:1;--text-scale-factor:calc(var(--total-scale-factor) * var(--min-font-size));--min-font-size-inv:calc(1 / var(--min-font-size));caret-color:CanvasText}
+.pdf-page .textLayer>:not(.markedContent),.pdf-page .textLayer .markedContent span:not(.markedContent){z-index:1;--font-height:0;font-size:calc(var(--text-scale-factor) * var(--font-height));--scale-x:1;--rotate:0deg;transform:rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv))}
+.pdf-page .textLayer .markedContent{display:contents}
+.pdf-page .textLayer span[role="img"]{user-select:none;cursor:default}
+.pdf-page .textLayer br::selection{background:transparent}
+.pdf-page .textLayer .endOfContent{display:block;position:absolute;inset:100% 0 0;z-index:0;cursor:default;user-select:none}
+.pdf-page .textLayer.selecting .endOfContent{top:0}

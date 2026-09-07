@@ -1,0 +1,308 @@
+{
+  "format": "neuroshelf-people",
+  "version": 1,
+  "projectId": "sc-snr",
+  "checkedOn": "2026-09-07",
+  "summary": "首批 12 位相关 PI 的官方资料基线，覆盖 SC 选择、基底节输出、视觉注意、分布式决策与关键方法。5 条背景记录均附来源；不把历史资助、常设招聘或人员名单当成最新变化。机构与姓名仍有待确认者暂未纳入，名单不是排名或完整领域普查。",
+  "profiles": [
+    {
+      "id": "pi_027811a314c3b966816e3c2a",
+      "name": "Massimo Scanziani",
+      "institution": "UCSF · Physiology",
+      "focus": "研究感觉环路中兴奋与抑制、神经群体活动和信息处理，结合电生理、成像与行为。",
+      "relevance": "项目关联分析：为 SC 通路与视觉皮层的关系提供环路背景；可重点跟进上丘相关输出和行为工作。",
+      "website": "https://scanzianilab.ucsf.edu/",
+      "sources": [
+        {
+          "label": "官方实验室／机构资料",
+          "url": "https://scanzianilab.ucsf.edu/"
+        }
+      ],
+      "checkedOn": "2026-09-07"
+    },
+    {
+      "id": "pi_52a889ca462fdf9227ed79dd",
+      "name": "Gidon Felsen",
+      "institution": "University of Colorado Anschutz",
+      "focus": "以小鼠上丘为重点，研究主动感觉、决策与定向运动，以及上游输入如何调节 SC。",
+      "relevance": "项目关联分析：与 SNr–SC 输出、空间目标竞争及头部定向直接相邻，应优先关注机制研究。",
+      "website": "https://medschool.cuanschutz.edu/physiology/faculty/regular-faculty/gidon-felsen-phd",
+      "sources": [
+        {
+          "label": "官方实验室／机构资料",
+          "url": "https://medschool.cuanschutz.edu/physiology/faculty/regular-faculty/gidon-felsen-phd"
+        }
+      ],
+      "checkedOn": "2026-09-07"
+    },
+    {
+      "id": "pi_61ccce586f2a0273ffe031e2",
+      "name": "Michael Häusser",
+      "institution": "HKU · JC STEM Lab of Neural Computation；UCL 荣誉教授",
+      "focus": "研究神经计算的细胞与树突机制，以及光学记录和操控环路的方法。香港大学当前页面列其为神经计算实验室主任。",
+      "relevance": "项目关联分析：光学扰动、单细胞计算和细胞类型功能分析可提供方法参考；不能据此认定实验室当前专门研究 SNr–SC。",
+      "website": "https://www.sbms.hku.hk/staff/michael-hausser?from=leadership",
+      "sources": [
+        {
+          "label": "官方实验室／机构资料",
+          "url": "https://www.sbms.hku.hk/staff/michael-hausser?from=leadership"
+        },
+        {
+          "label": "UCL 当前人员与研究介绍",
+          "url": "https://www.ucl.ac.uk/medical-sciences/divisions/wolfson-institute-biomedical-research/research/neural-computation"
+        },
+        {
+          "label": "ERC 研究方向介绍",
+          "url": "https://erc.europa.eu/erc-member/michael-h%C3%A4usser"
+        }
+      ],
+      "checkedOn": "2026-09-07"
+    },
+    {
+      "id": "pi_e1550afc687028355647acaf",
+      "name": "Jasper Poort",
+      "institution": "University of Cambridge · PDN",
+      "focus": "研究学习与注意如何选择与决策有关的视觉信息，结合小鼠视觉行为、成像、电生理和建模。",
+      "relevance": "项目关联分析：帮助区分感觉表征、任务相关性与注意选择，适合参考双刺激竞争任务设计。",
+      "website": "https://www.bio.cam.ac.uk/staff/jasper-poort",
+      "sources": [
+        {
+          "label": "官方实验室／机构资料",
+          "url": "https://www.bio.cam.ac.uk/staff/jasper-poort"
+        }
+      ],
+      "checkedOn": "2026-09-07"
+    },
+    {
+      "id": "pi_0359d20eda3f6afb1f4d79b1",
+      "name": "Loren Frank",
+      "institution": "UCSF · Physiology",
+      "focus": "研究海马及相关脑区如何通过活动和可塑性支持记忆、学习与基于经验的决策。",
+      "relevance": "项目关联分析：为记忆引导的行动选择提供对照思路，尤其关注海马表征如何与运动输出关联。",
+      "website": "https://physiology.ucsf.edu/content/frank-loren-phd",
+      "sources": [
+        {
+          "label": "官方实验室／机构资料",
+          "url": "https://physiology.ucsf.edu/content/frank-loren-phd"
+        }
+      ],
+      "checkedOn": "2026-09-07"
+    },
+    {
+      "id": "pi_8e90236c4364b67f5a98d155",
+      "name": "Richard Krauzlis",
+      "institution": "NIH · National Eye Institute",
+      "focus": "Visual Circuits Section 研究眼动、视觉选择与目标导向行为；其工作涉及上丘在注视、眼跳和注意中的作用。",
+      "relevance": "项目关联分析：为上丘空间优先级与注意功能提供灵长类证据，解释小鼠结果时需注意物种和任务差异。",
+      "website": "https://www.nei.nih.gov/research-and-training/research-labs-and-branches/we-are-nei-intramural/richard-krauzlis",
+      "sources": [
+        {
+          "label": "官方实验室／机构资料",
+          "url": "https://www.nei.nih.gov/research-and-training/research-labs-and-branches/we-are-nei-intramural/richard-krauzlis"
+        }
+      ],
+      "checkedOn": "2026-09-07"
+    },
+    {
+      "id": "pi_1dab0929e0695c94a2fd193e",
+      "name": "Tiago Branco",
+      "institution": "UCL · Sainsbury Wellcome Centre",
+      "focus": "研究小鼠自然防御行为、威胁下的选择与动作，以及把感觉、经验和先天驱动转化为行为的机制。",
+      "relevance": "项目关联分析：可用作 SC 下游行动执行与本能选择的比较，避免将逃逸机制直接等同于注意竞争。",
+      "website": "https://www.sainsburywellcome.org/groups/branco-lab",
+      "sources": [
+        {
+          "label": "官方实验室／机构资料",
+          "url": "https://www.sainsburywellcome.org/groups/branco-lab"
+        }
+      ],
+      "checkedOn": "2026-09-07"
+    },
+    {
+      "id": "pi_2f7803e27e3acd96d6783663",
+      "name": "Sonja Hofer",
+      "institution": "UCL · Sainsbury Wellcome Centre",
+      "focus": "研究视觉感知、感觉引导的决策，以及感觉信息、先验知识和行为状态在分布式网络中的整合。",
+      "relevance": "项目关联分析：为视觉皮层与皮层下通路、学习和行为状态对选择的影响提供背景。",
+      "website": "https://www.sainsburywellcome.org/web/groups/hofer-lab",
+      "sources": [
+        {
+          "label": "官方实验室／机构资料",
+          "url": "https://www.sainsburywellcome.org/web/groups/hofer-lab"
+        }
+      ],
+      "checkedOn": "2026-09-07"
+    },
+    {
+      "id": "pi_ef6d7350dd1ef83dfcf78f47",
+      "name": "Tom Mrsic-Flogel",
+      "institution": "UCL · Sainsbury Wellcome Centre",
+      "focus": "研究全脑决策计算：如何结合感觉证据与已学知识，在不确定条件下形成表征并选择动作。",
+      "relevance": "项目关联分析：帮助把 SNr–SC 局部环路问题放入分布式决策网络，并设计感觉、期望和动作控制条件。",
+      "website": "https://www.sainsburywellcome.org/web/groups/mrsic-flogel-lab",
+      "sources": [
+        {
+          "label": "官方实验室／机构资料",
+          "url": "https://www.sainsburywellcome.org/web/groups/mrsic-flogel-lab"
+        }
+      ],
+      "checkedOn": "2026-09-07"
+    },
+    {
+      "id": "pi_a75ccf8cb0c6f4c17030ae13",
+      "name": "Matteo Carandini",
+      "institution": "UCL · Cortexlab",
+      "focus": "与 Kenneth Harris 共同领导 Cortexlab，研究神经群体计算、视觉行为与环路，并参与 Neuropixels 和 IBL。",
+      "relevance": "项目关联分析：可借鉴全脑记录、行为量化和视觉决策分析；方法关联并不等同于已证明 SNr–Pitx2 特异通路。",
+      "website": "https://www.ucl.ac.uk/brain-sciences/research/meet-expert/meet-expert-professor-matteo-carandini",
+      "sources": [
+        {
+          "label": "官方实验室／机构资料",
+          "url": "https://www.ucl.ac.uk/brain-sciences/research/meet-expert/meet-expert-professor-matteo-carandini"
+        }
+      ],
+      "checkedOn": "2026-09-07"
+    },
+    {
+      "id": "pi_80825610609ae83b9730d16a",
+      "name": "Kenneth Harris",
+      "institution": "UCL · Cortexlab",
+      "focus": "与 Matteo Carandini 共同领导 Cortexlab，结合实验与计算分析研究感觉及内部信号如何指导行为。",
+      "relevance": "项目关联分析：可参考大规模神经活动分析、行为状态控制及跨脑区建模；与 Carandini 属同一联合实验室。",
+      "website": "https://www.ucl.ac.uk/brain-sciences/cortexlab/people",
+      "sources": [
+        {
+          "label": "官方实验室／机构资料",
+          "url": "https://www.ucl.ac.uk/brain-sciences/cortexlab/people"
+        },
+        {
+          "label": "Cortexlab 研究方向",
+          "url": "https://www.ucl.ac.uk/brain-sciences/cortexlab"
+        }
+      ],
+      "checkedOn": "2026-09-07"
+    },
+    {
+      "id": "pi_ea40b2276ad91a875a7a94d0",
+      "name": "Samuel Solomon",
+      "institution": "UCL · Visual Neuroscience Lab",
+      "focus": "研究神经元层面的感觉与内部信号整合、注意和运动视觉；近期官网列有小鼠 SC 自运动与物体运动 looming 研究。",
+      "relevance": "项目关联分析：与 moving disk、looming 和行为混淆控制有关，适合参考刺激与自运动变量的分离。",
+      "website": "https://www.ucl.ac.uk/brain-sciences/pals/research/experimental-psychology/research/behavioural-neuroscience/visual-neuroscience-lab",
+      "sources": [
+        {
+          "label": "官方实验室／机构资料",
+          "url": "https://www.ucl.ac.uk/brain-sciences/pals/research/experimental-psychology/research/behavioural-neuroscience/visual-neuroscience-lab"
+        },
+        {
+          "label": "UCL 视觉神经科学研究及论文",
+          "url": "https://www.ucl.ac.uk/brain-sciences/ioo/research/research-pillars/visual-neuroscience"
+        }
+      ],
+      "checkedOn": "2026-09-07"
+    }
+  ],
+  "events": [
+    {
+      "id": "ev_50ac71617981bf55cfd74d8c",
+      "piId": "pi_027811a314c3b966816e3c2a",
+      "type": "funding",
+      "title": "NIH R01NS123912：视网膜—上丘与视觉诱发先天行为",
+      "summary": "UCSF 资助记录列出 Mapping Retinotectal Circuits for Visual-evoked Innate Behaviors，项目期 2021-08-15 至 2026-07-31；Scanziani 为共同 PI。",
+      "relevance": "项目关联分析：可作为寻找视网膜—上丘机制与合作团队的入口。",
+      "caveat": "这是历史资助记录，页面未披露金额。按所列结束日期已届满；未核实是否续期，不能当作本周新获资助。",
+      "eventDate": "2021-08-15",
+      "detectedOn": "2026-09-07",
+      "baseline": true,
+      "sources": [
+        {
+          "label": "官方公开来源",
+          "url": "https://profiles.ucsf.edu/massimo.scanziani"
+        }
+      ],
+      "journal": "",
+      "doi": ""
+    },
+    {
+      "id": "ev_d73bd7cd104fc5a3431f8dc5",
+      "piId": "pi_61ccce586f2a0273ffe031e2",
+      "type": "project",
+      "title": "香港大学 JC STEM Lab of Neural Computation",
+      "summary": "香港大学官方人员页列 Michael Häusser 为该实验室主任和 Lee Man-Chiu Professor in Neuroscience；UCL 当前人员页列其为荣誉教授。",
+      "relevance": "项目关联分析：神经计算及光学方法的潜在资源入口，后续可跟进公开研究成果。",
+      "caveat": "记录为当前机构基线。该页面没有提供项目启动日期或资助金额，不能把页面更新时间当作获资助或入职日期。",
+      "eventDate": "",
+      "detectedOn": "2026-09-07",
+      "baseline": true,
+      "sources": [
+        {
+          "label": "官方公开来源",
+          "url": "https://www.sbms.hku.hk/staff/michael-hausser?from=leadership"
+        }
+      ],
+      "journal": "",
+      "doi": ""
+    },
+    {
+      "id": "ev_305ea432cf9c4c743d93dd68",
+      "piId": "pi_2f7803e27e3acd96d6783663",
+      "type": "publication",
+      "title": "Science：视觉皮层指导学习抑制恐惧反应",
+      "summary": "实验室官方论文页列出 Overwriting an instinct: Visual cortex instructs learning to suppress fear responses，发表于 Science，日期 2025-02-06。",
+      "relevance": "项目关联分析：关注经验如何改变先天反应，以及皮层对皮层下输出的影响。",
+      "caveat": "这是已有 CNS 本刊论文的背景记录，并非本周新论文。当前记录核对了实验室论文信息；机制细节需进一步阅读全文。",
+      "eventDate": "2025-02-06",
+      "detectedOn": "2026-09-07",
+      "baseline": true,
+      "sources": [
+        {
+          "label": "官方公开来源",
+          "url": "https://www.sainsburywellcome.org/web/groups/hofer-lab"
+        }
+      ],
+      "journal": "Science",
+      "doi": "10.1126/science.adr2247"
+    },
+    {
+      "id": "ev_12639eb986b5762604cfe57d",
+      "piId": "pi_80825610609ae83b9730d16a",
+      "type": "hiring",
+      "title": "Cortexlab 常设加入实验室意向入口",
+      "summary": "Cortexlab 官方页面欢迎有兴趣的研究者联系，即使当时没有发布岗位广告。",
+      "relevance": "项目关联分析：作为了解联合实验室招募与方法合作机会的入口。",
+      "caveat": "页面未注明发布日期、具体名额、经费保障或截止日期；这是长期意向入口，不代表新发布的招聘岗位。",
+      "eventDate": "",
+      "detectedOn": "2026-09-07",
+      "baseline": true,
+      "sources": [
+        {
+          "label": "官方公开来源",
+          "url": "https://www.ucl.ac.uk/brain-sciences/cortexlab"
+        }
+      ],
+      "journal": "",
+      "doi": ""
+    },
+    {
+      "id": "ev_99e35ae927f3c5b26dd31812",
+      "piId": "pi_027811a314c3b966816e3c2a",
+      "type": "team",
+      "title": "Scanziani 团队名单基线：Cameron Wilhite",
+      "summary": "官方团队页将 Cameron Wilhite 列为 Postdoctoral Scholar。",
+      "relevance": "项目关联分析：当前上丘步态及海马—SC 候选预印本中出现这一作者，可从该团队页继续追踪。",
+      "caveat": "名单没有给出加入日期，所以不能认定为近期新招人员。此条仅建立首次观察基线。",
+      "eventDate": "",
+      "detectedOn": "2026-09-07",
+      "baseline": true,
+      "sources": [
+        {
+          "label": "官方公开来源",
+          "url": "https://scanzianilab.ucsf.edu/people"
+        }
+      ],
+      "journal": "",
+      "doi": ""
+    }
+  ],
+  "id": "people-cfb351adb6233dbadda09b8f"
+}

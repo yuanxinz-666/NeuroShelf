@@ -1,0 +1,17 @@
+node_modules/
+dist/
+release/
+.local-data/
+.test-data/
+.cache/
+.pnpm-store/
+.publish/
+.tools/
+projects/
+output/
+weekly-inbox/
+public/pdf-assets/
+*.log
+*.tmp
+.env*
+!.env.example

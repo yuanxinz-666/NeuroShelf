@@ -1,0 +1,76 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { ArrowRight, BookOpen, CalendarDays, Check, Download, ExternalLink, FolderOpen, LoaderCircle, Plus, Search, Settings2, Sparkles, Users, X, GitBranch } from 'lucide-react';
+import { api } from './bridge';
+import { effortLabel } from './ai-options';
+import PiDetail from './PiDetail';
+import './projects.css';
+
+export function ProjectPicker({ projects, active, onSwitch, onNew }) {
+  return <div className="project-picker"><label className="project-selector"><div className="project-initial">P</div><div><span>研究项目</span><select aria-label="切换研究项目" value={active?.id || ''} onChange={e => onSwitch(e.target.value)}>{projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></div></label><button className="new-project-button" onClick={onNew}><Plus size={14} />新建项目</button></div>;
+}
+
+export function ProjectDialog({ project, onClose, onSave }) {
+  const ref = useRef(null), [form, setForm] = useState({ name: project?.name || '', question: project?.question || '', keywords: project?.keywords?.join(', ') || '', species: project?.species || '', exclusions: project?.exclusions || '', weeklyEnabled: project?.weeklyEnabled ?? true });
+  const [busy, setBusy] = useState(false), [error, setError] = useState('');
+  useEffect(() => { ref.current.showModal(); return () => ref.current?.close(); }, []);
+  const field = (key, label, placeholder, multiline = false) => <label className="project-field">{label}{multiline ? <textarea required={key === 'question'} value={form[key]} onChange={e => setForm({ ...form, [key]: e.target.value })} placeholder={placeholder} rows={key === 'question' ? 3 : 2} /> : <input required={key === 'name'} value={form[key]} onChange={e => setForm({ ...form, [key]: e.target.value })} placeholder={placeholder} maxLength={key === 'name' ? 100 : 500} />}</label>;
+  return <dialog ref={ref} className="modal project-dialog" onCancel={e => { if (busy) e.preventDefault(); else onClose(); }}><form onSubmit={async e => { e.preventDefault(); setBusy(true); setError(''); try { await onSave(form); } catch (err) { setError(err.message); setBusy(false); } }}><div className="modal-head"><div><h2>{project ? '项目设置' : '开始一个新的研究项目'}</h2><p>文献、PDF、笔记和 PI 动态都保存在这个项目的资料夹中。</p></div><button type="button" className="icon-button" aria-label="关闭项目对话框" disabled={busy} onClick={onClose}><X size={20} /></button></div><div className="project-form">
+    {field('name', '项目名称', '例如：海马与空间导航')}{field('question', '你想回答的研究问题', '描述研究对象、环路、行为和你最关心的机制…', true)}{field('keywords', '检索关键词（中英文均可，用逗号分开）', 'hippocampus, spatial navigation, place cells', true)}{field('species', '物种或研究范围', '例如：小鼠为主，兼顾灵长类')}{field('exclusions', '暂时排除的方向（选填）', '帮助减少不相关结果', true)}
+    <label className="project-checkbox"><input type="checkbox" checked={form.weeklyEnabled} onChange={e => setForm({ ...form, weeklyEnabled: e.target.checked })} />加入每周一的论文与已关注 PI 更新</label><p className="project-muted">调研使用已连接的 Codex 会员；结果先进入候选区，由你决定是否加入文库。定时更新需要电脑与 Codex 保持运行。</p>{error && <p className="form-error" role="alert">{error}</p>}</div><div className="modal-footer"><button className="button" type="button" disabled={busy} onClick={onClose}>取消</button><button className="button primary" disabled={busy}>{busy ? <LoaderCircle className="spin" size={16} /> : <Check size={16} />}{project ? '保存项目设置' : '创建项目资料夹'}</button></div></form></dialog>;
+}
+
+function ResearchStatus({ job, stop, navigate, notify }) {
+  const busy = ['running', 'stopping'].includes(job.status), [now, setNow] = useState(Date.now());
+  useEffect(() => { if (!busy) return; setNow(Date.now()); const timer = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(timer); }, [busy, job.id]);
+  const duration = ms => { const seconds = Math.max(0, Math.floor(ms / 1000)); return `${Math.floor(seconds / 60)} 分 ${String(seconds % 60).padStart(2, '0')} 秒`; };
+  const elapsed = (busy ? now : Date.parse(job.finishedAt || job.startedAt)) - Date.parse(job.startedAt);
+  const silent = now - Date.parse(job.lastActivityAt || job.startedAt);
+  const phase = ({ connecting: '连接会员', preparing: '准备请求', waiting: '等待模型', thinking: '分析资料', searching: '检索来源', reading: '核对网页', writing: '整理结果', saving: '保存结果', downloading: '下载全文', stopping: '正在停止' })[job.phase] || '处理中';
+  const task = (({ people: 'PI 与实验室调研', initial: '项目论文初筛', weekly: '近期进展筛选', pdf: '补充 PDF 全文', dossier: 'PI 详细档案', bibliography: 'PI 论文数据' })[job.kind] || '调研任务') + (job.piName ? ` · ${job.piName}` : '');
+  return <section className={`project-run ${busy ? 'project-run-active' : ''}`} aria-label="调研任务状态" data-phase={job.phase} data-status={job.status}>
+    <div className="project-section-title"><h2>{task}{busy ? ' · 进行中' : ''}</h2>{busy && <button className="button" disabled={job.status === 'stopping' || job.phase === 'saving'} onClick={stop}>{job.status === 'stopping' ? '正在停止…' : job.phase === 'saving' ? '正在保存…' : '停止任务'}</button>}</div>
+    <div className={`job-status ${job.status}`} role="status">{busy && <LoaderCircle className="spin" size={16} />}{busy ? phase : ({ completed: '已完成', failed: '未完成', interrupted: '已中断' })[job.status]}</div>
+    <p className="job-message">{job.message}</p>{busy && job.detail && <p className="job-source">当前来源：{job.detail}</p>}
+    <div className="job-metrics"><span className="job-elapsed">{busy ? '已用时' : '耗时'} {duration(elapsed || 0)}</span>{!['pdf', 'bibliography'].includes(job.kind) && job.effort && <span>GPT-6 · {effortLabel(job.effort)}</span>}<span>{job.searches || 0} 次来源检索／核验</span></div>
+    {busy && <><p className="job-background-hint">任务在后台进行，你可以继续阅读文献、记笔记或查看 PI。完成后即可开始下一项调研。</p>{silent >= 60000 && job.status === 'running' && job.phase !== 'saving' && <p className="job-wait-hint">{duration(silent)}未收到新进度，可能在等待模型或网络。可以继续等待，或停止后重试。</p>}</>}
+    {!busy && job.profiles != null && <button className="text-button" onClick={() => navigate('people')}>查看 PI 与实验室 <ArrowRight size={14} /></button>}
+    {!busy && job.candidates != null && job.kind !== 'people' && <button className="text-button" onClick={() => navigate('weekly')}>查看候选论文 <ArrowRight size={14} /></button>}
+    {job.results && <details><summary>查看 PDF 下载结果（{job.results.length} 篇）</summary><div className="download-results">{job.results.map(r => <div key={r.id}><strong>{r.status === 'downloaded' ? '已关联' : '需手动导入'} · {r.title}</strong><p>{r.reason || `${r.pages} 页 · 标题已核验`}</p>{r.url && <button className="text-button" onClick={() => api.openExternal(r.url).catch(e => notify(e.message))}>打开来源 <ExternalLink size={13} /></button>}</div>)}</div></details>}
+  </section>;
+}
+
+export function ProjectHub({ project, library, job, start, stop, navigate, edit, schedule, notify }) {
+  const missing = library.papers.filter(p => !p.pdf), pending = (library.weekly?.candidates || []).filter(c => c.status === 'pending').length;
+  const people = library.people?.profiles || [], busy = ['running', 'stopping'].includes(job?.status);
+  const stages = [
+    { step: '01', kind: 'initial', title: '筛选项目论文', icon: Search, description: '从研究问题出发，查找奠基工作、机制证据、关键方法和最新进展。', action: '开始全网初筛', run: () => start('initial'), footer: `${pending} 篇待你审核`, link: () => navigate('weekly') },
+    { step: '02', kind: 'people', title: '认识 PI 与实验室', icon: Users, description: '从核心作者延伸到相关实验室，记录研究方向、资助、大项目与团队动态。', action: '调研 PI 与实验室', run: () => start('people'), footer: `${people.length} 位 PI · ${people.filter(p => p.followed).length} 位已关注`, link: () => navigate('people') },
+    { step: '03', kind: 'pdf', title: '建立文库与全文', icon: Download, description: '候选论文经你收录后，查找可下载的全文，核验标题并关联到文库。', action: '下载缺失 PDF', run: () => start('pdf'), disabled: !missing.length, footer: `${library.papers.length} 篇已入库 · ${missing.length} 篇待补全文`, link: () => navigate('library') },
+    { step: '04', kind: 'weekly', title: '持续跟进研究', icon: CalendarDays, description: '每周一筛选新论文，并查看已关注 PI 的公开变化。推荐结果保留在候选区。', action: '现在筛选近期进展', run: () => start('weekly'), footer: project.weeklyEnabled ? (schedule?.label || '已加入项目更新 · 待配置定时任务') : '这个项目已暂停周一更新', link: () => navigate('weekly') },
+  ];
+  return <div className="project-scroll"><div className="project-page"><div className="page-eyebrow">RESEARCH PROJECT</div><div className="project-heading"><div><h1>{project.name}</h1><p>{project.question}</p></div><div><button className="button" onClick={() => api.openProject().catch(e => notify(e.message))}><FolderOpen size={16} />打开项目文件夹</button><button className="icon-button" aria-label="编辑项目设置" onClick={edit}><Settings2 size={19} /></button></div></div><div className="project-keywords">{project.keywords.map(k => <span key={k}>{k}</span>)}</div>
+    <button className="project-experiments" onClick={() => navigate('experiments')}><GitBranch size={24} /><div><strong>我的实验进程</strong><p>用思维导图串起实验步骤，记录结果与图片证据。</p></div><span>{(library.experiments?.nodes || []).filter(n => !n.archived && n.status === 'done').length} / {(library.experiments?.nodes || []).filter(n => !n.archived).length} 步骤已完成</span><ArrowRight size={17} /></button>
+    {busy && <ResearchStatus job={job} stop={stop} navigate={navigate} notify={notify} />}
+    <div className="workflow-heading"><h2>从问题到积累，让每一步连起来</h2><span>每个项目都有同一套工作流程</span></div><div className="workflow-grid">{stages.map(stage => <article className={`workflow-card ${busy && job.kind === stage.kind ? 'workflow-running' : ''}`} key={stage.step}><div className="workflow-top"><stage.icon size={23} /><span>{stage.step}</span></div><h3>{stage.title}</h3><p>{stage.description}</p><button className="button" disabled={busy || stage.disabled} onClick={stage.run}>{busy && job.kind === stage.kind ? <><LoaderCircle className="spin" size={14} />{job.status === 'stopping' ? '正在停止…' : '正在后台运行…'}</> : <>{stage.action}<ArrowRight size={14} /></>}</button><button className="workflow-link" onClick={stage.link}>{stage.footer}<ArrowRight size={13} /></button></article>)}</div>
+    {!busy && (job ? <ResearchStatus job={job} stop={stop} navigate={navigate} notify={notify} /> : <section className="project-run"><p className="project-muted">从上面的任意一步开始。检索范围和结果会保存在这个项目的调研记录中。</p></section>)}
+    <div className="project-directory"><FolderOpen size={19} /><div><strong>所有积累，都有自己的位置</strong><p>文献与 PDF · 论文候选 · PI 资料 · 实验记录与图片 · 调研记录 · 下载清单 · 原始材料</p><code>{project.directory}</code></div></div>
+  </div></div>;
+}
+
+const eventLabels = { funding: 'Funding', project: '大项目', team: '团队变化', hiring: '招聘', publication: '重要论文' };
+export function PeopleView({ project, people = { profiles: [], events: [], batches: [] }, update, start, busy, query, notify, startPi, job, stop, refresh }) {
+  const [selectedId, setSelectedId] = useState(null);
+  const [tab, setTab] = useState('labs'), [onlyFollowed, setOnlyFollowed] = useState(false), [type, setType] = useState('all'), [pending, setPending] = useState('');
+  const followed = people.profiles.filter(p => p.followed), term = query.trim().toLowerCase();
+  const profiles = people.profiles.filter(p => (!onlyFollowed || p.followed) && [p.name, p.institution, p.focus, p.relevance].join(' ').toLowerCase().includes(term));
+  const ids = new Set(profiles.map(p => p.id));
+  const events = people.events.filter(e => ids.has(e.piId) && (type === 'all' || e.type === type)).sort((a, b) => (b.eventDate || b.detectedOn).localeCompare(a.eventDate || a.detectedOn));
+  const sourceLinks = sources => <div className="pi-sources">{sources.map(s => <button className="text-button" key={s.url} onClick={() => api.openExternal(s.url).catch(e => notify(e.message))}>{s.label}<ExternalLink size={12} /></button>)}</div>;
+  const selected = people.profiles.find(p => p.id === selectedId);
+  if (selected) return <PiDetail key={selected.id} person={selected} people={people} project={project} back={() => setSelectedId(null)} update={update} start={startPi} busy={busy} notify={notify} refresh={refresh} statusPanel={job?.piId === selected.id ? <ResearchStatus job={job} stop={stop} navigate={() => setSelectedId(null)} notify={notify} /> : busy ? <p className="dossier-note">另一个调研正在后台运行，结束后可更新这份档案。</p> : null} />;
+  return <div className="project-scroll"><div className="project-page people-page"><div className="page-eyebrow">PEOPLE & LABS · {project.name}</div><div className="project-heading"><div><h1>PI 与实验室</h1><p>跟进与你的研究有关的人、方向和资源。</p></div><button className="button primary" disabled={busy} onClick={() => start('people')}><Search size={16} />调研与补充名单</button></div><div className="people-overview"><span><b>{people.profiles.length}</b> 位 PI</span><span><b>{followed.length}</b> 位已关注</span><span><b>{people.events.length}</b> 条有来源的记录</span><p>关注后加入周一动态检索。历史背景与新进展分别标明。</p></div><div className="people-controls"><div className="library-tabs">{[['labs', '实验室档案'], ['events', '动态时间线']].map(([id, label]) => <button key={id} className={tab === id ? 'active' : ''} onClick={() => setTab(id)}>{label}</button>)}</div><label><input type="checkbox" checked={onlyFollowed} onChange={e => setOnlyFollowed(e.target.checked)} />只看已关注</label>{tab === 'events' && <select aria-label="PI 动态类型" value={type} onChange={e => setType(e.target.value)}><option value="all">所有动态</option>{Object.entries(eventLabels).map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select>}</div>
+    {tab === 'labs' ? <div className="pi-grid">{profiles.map(p => <article className="pi-card" key={p.id}><div className="pi-card-top"><div className="pi-avatar">{p.name.split(/\s/).filter(Boolean).slice(0, 2).map(s => s[0]).join('')}</div><div><h2><button className="pi-name-button" onClick={() => setSelectedId(p.id)}>{p.name}</button></h2><p>{p.institution}</p></div><button className={`button ${p.followed ? 'pi-followed' : ''}`} disabled={pending === p.id} onClick={async () => { setPending(p.id); try { await update(p.id, { followed: !p.followed }); } catch (e) { notify(e.message); } finally { setPending(''); } }}>{p.followed ? <Check size={13} /> : <Plus size={13} />}{p.followed ? '已关注' : '关注'}</button></div><p>{p.focus}</p><div className="pi-relevance"><span>与本项目的关系</span><p>{p.relevance}</p></div>{sourceLinks(p.sources)}<div className="pi-card-footer"><div className="pi-checked">资料核对：{p.checkedOn}</div><button className="text-button pi-detail-link" onClick={() => setSelectedId(p.id)}>详细档案 <ArrowRight size={12} /></button></div></article>)}</div> : <div className="pi-timeline">{events.map(e => <article className="pi-event" key={e.id}><div className="pi-event-date"><b>{e.eventDate || '日期未披露'}</b><span>{e.baseline ? '历史／基线记录' : '公开动态'}</span></div><div className="pi-event-body"><div className="pi-event-meta"><span>{eventLabels[e.type]}</span><b>{people.profiles.find(p => p.id === e.piId)?.name}</b>{e.journal && <span>{e.journal}</span>}</div><h2>{e.title}</h2><p>{e.summary}</p><div className="pi-relevance"><span>项目关联 · 分析</span><p>{e.relevance}</p></div><p className="pi-caveat">{e.caveat}</p>{sourceLinks(e.sources)}<div className="pi-checked">发现／核对：{e.detectedOn}</div></div></article>)}</div>}
+    {!(tab === 'labs' ? profiles : events).length && <div className="empty-state"><Users size={32} /><h3>{tab === 'labs' ? '为这个项目建立 PI 名单' : '暂时没有符合筛选的动态'}</h3><p>{tab === 'labs' ? '先调研相关实验室，再选择你想持续关注的 PI。' : '周一任务会核查已关注 PI 的资助、项目、团队和论文来源。'}</p></div>}
+    <p className="project-muted">Funding 和团队资料只记录公开来源。来源没有说明的金额、角色和发生日期会明确保留为未知。</p>
+  </div></div>;
+}

@@ -1,0 +1,19 @@
+.paper-review {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 12px;
+  padding: 6px 9px;
+  border: 1px solid #e5ebdf;
+  border-radius: 5px;
+  background: #f7f9f3;
+  min-width: 0;
+}
+.paper-review:focus-within { background: #fff; border-color: #88ad93; box-shadow: 0 0 0 2px #5c946514; }
+.paper-review label { flex-shrink: 0; font-size: 11px; color: #6c8264; cursor: text; }
+.paper-review input { flex: 1; min-width: 0; width: 100%; border: 0; outline: 0; background: transparent; color: #3c5b47; padding: 2px 0; font: inherit; font-size: 12px; line-height: 1.5; text-overflow: ellipsis; }
+.paper-review input::placeholder { color: #87927e; }
+.review-save { display: flex; flex: 0 0 12px; color: #58845d; }
+.paper-review.review-error { border-color: #ba735b; }
+.review-retry { flex-shrink: 0; font-size: 11px; color: #9a513e; }
+.notes-page > .paper-review { margin: 14px 0; }

@@ -1,0 +1,22 @@
+{
+  "id": "gpt-6-astra",
+  "name": "GPT-6 Astra",
+  "defaultEffort": "medium",
+  "apiEfforts": ["low", "medium", "high", "xhigh", "max"],
+  "effortLabels": {
+    "low": "低 · Low",
+    "medium": "中 · Medium",
+    "high": "高 · High",
+    "xhigh": "超高 · XHigh",
+    "max": "Max",
+    "ultra": "Ultra"
+  },
+  "effortHints": {
+    "low": "较少推理，适合希望尽快得到解释时使用。",
+    "medium": "兼顾思考时间与推理深度，适合日常阅读。",
+    "high": "增加推理，适合分析实验逻辑和证据。",
+    "xhigh": "进一步增加推理，适合复杂问题。",
+    "max": "投入更多推理时间，适合有耐心等待的深入分析。",
+    "ultra": "当前连接提供的最高推理档位，通常需要更久。"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "name": "neuroshelf",
+  "version": "0.7.1",
+  "private": true,
+  "description": "按项目组织论文、PDF、笔记、PI 动态与实验进程的研究工作台",
+  "author": "NeuroShelf",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "node scripts/prepare-assets.mjs && vite build",
+    "start": "electron .",
+    "test": "node --test --test-isolation=none tests/*.test.cjs",
+    "test:desktop": "node scripts/smoke-desktop.cjs",
+    "package": "pnpm build && electron-builder --win dir",
+    "dist": "pnpm build && electron-builder --win portable"
+  },
+  "dependencies": {
+    "dompurify": "^3.2.6",
+    "idb-keyval": "^6.2.2",
+    "lucide-react": "^0.468.0",
+    "marked": "^15.0.12",
+    "pdfjs-dist": "^5.4.149",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
+    "electron": "^41.0.0",
+    "electron-builder": "^26.0.12",
+    "vite": "^6.3.6"
+  },
+  "build": {
+    "appId": "com.neuroshelf.reader",
+    "productName": "NeuroShelf",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "data/**/*",
+      "build/icon.ico",
+      "package.json"
+    ],
+    "asar": true,
+    "npmRebuild": false,
+    "win": {
+      "target": "portable",
+      "icon": "build/icon.ico",
+      "signAndEditExecutable": true
+    },
+    "portable": {
+      "artifactName": "NeuroShelf-${version}-Windows.exe"
+    }
+  }
+}
