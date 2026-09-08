@@ -124,6 +124,7 @@ class LibraryStore {
     await fs.writeFile(temp, JSON.stringify(next, null, 2), 'utf8');
     try { await fs.copyFile(this.file, this.file + '.bak'); } catch (e) { if (e.code !== 'ENOENT') throw e; }
     await renameWithRetry(temp, this.file);
+    require('./history.cjs').recordEdit(this, this.library, next);
     this.library = next;
   }
   find(id) {
@@ -296,4 +297,5 @@ class LibraryStore {
   }
 }
 installExperimentMethods(LibraryStore);
+require('./history.cjs').installHistory(LibraryStore, validateLibrary);
 module.exports = { LibraryStore, verifyPdf, validateLibrary, normalizePatch, MAX_PDF_BYTES, pdfName };

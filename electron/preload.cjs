@@ -3,6 +3,8 @@ const projectId = ipcRenderer.sendSync('project:identity');
 const call = channel => (...args) => ipcRenderer.invoke(channel, projectId, ...args);
 contextBridge.exposeInMainWorld('neuroshelf', {
   desktop: true,
+  setFocusMode: call('window:focus-mode'), flush: call('library:flush'), historyAction: call('history:action'),
+  onFocusMode(callback) { const listener = (_event, value) => callback(value); ipcRenderer.on('window:focus-mode', listener); return () => ipcRenderer.removeListener('window:focus-mode', listener); },
   chooseProjectRoot: call('projects:choose-root'),
   weeklySync: call('weekly:sync'),
   weeklyDecide: call('weekly:decide'),

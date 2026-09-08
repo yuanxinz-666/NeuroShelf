@@ -3,6 +3,7 @@ const path = require('node:path');
 const fs = require('node:fs/promises');
 const { pathToFileURL } = require('node:url');
 const { LibraryStore } = require('./store.cjs');
+const { userEdit } = require('./history.cjs');
 const { buildRequest, streamResponse } = require('./ai.cjs');
 const { CodexReader } = require('./codex.cjs');
 const { migrateSettings, nextSettings } = require('./ai-settings.cjs');
@@ -86,7 +87,7 @@ async function initialize() {
   register('projects:create', raw => projects.create(raw));
   register('projects:update', raw => projects.update(getContext().project.id, raw));
   register('projects:folder', () => shell.openPath(getContext().directory));
-  register('people:update', (id, patch) => getStore().updatePerson(id, patch));
+  register('people:update', (id, patch) => userEdit(getStore(), 'person:' + id, () => getStore().updatePerson(id, patch)));
   register('people:research', (piId, mode = 'dossier') => { if (!['dossier', 'bibliography'].includes(mode)) throw new Error('档案更新类型无效。'); return research.start(getContext(), mode, prefs.effort, { piId }); });
   register('people:rankings', async () => {
     const result = await dialog.showOpenDialog(win, { title: tr("导入学校获取的期刊分区表"), filters: [{ name: tr("期刊分区数据"), extensions: ['json', 'csv'] }], properties: ['openFile'] });
@@ -139,15 +140,18 @@ async function initialize() {
   session.defaultSession.setPermissionRequestHandler((_wc, _permission, callback) => callback(false));
   session.defaultSession.setPermissionCheckHandler(() => false);
   register('library:load', () => getStore().get());
-  register('library:update', (id, patch) => getStore().update(id, patch));
-  register('library:highlight', (id, change) => getStore().mutateHighlight(id, change));
-  register('experiments:change', change => getStore().changeExperiment(change?.action === "add" && !change.title ? { ...change, title: tr("新的实验步骤") } : change));
+  register('library:update', (id, patch, options) => options?.history === false || Object.hasOwn(patch || {}, 'page') ? getStore().update(id, patch) : userEdit(getStore(), 'paper:' + id, () => getStore().update(id, patch)));
+  register('library:highlight', (id, change) => userEdit(getStore(), 'highlight:' + change?.highlightId, () => getStore().mutateHighlight(id, change)));
+  register('experiments:change', change => userEdit(getStore(), 'experiment:' + change?.id, () => getStore().changeExperiment(change?.action === "add" && !change.title ? { ...change, title: tr("新的实验步骤") } : change)));
+  register('history:action', direction => getStore().historyAction(direction));
+  register('library:flush', async () => { for (const context of projects.contexts.values()) { await context.sync; await context.store?.queue; } return true; });
+  register('window:focus-mode', enabled => { if (typeof enabled !== 'boolean') throw Error('专注模式设置无效。'); win.setFullScreen(enabled); return enabled; });
   register('experiments:image-import', payload => {
     const bytes = Buffer.from(payload.bytes);
     require('./experiments.cjs').verifyImage(bytes);
     const image = require('electron').nativeImage.createFromBuffer(bytes), size = image.getSize();
     if (image.isEmpty() || size.width * size.height > 40000000) throw new Error('图片无法解码或超过 4000 万像素，请导出较小的 PNG 后重试。');
-    return getStore().importEvidence(payload);
+    return userEdit(getStore(), 'experiment-image:' + payload.nodeId, () => getStore().importEvidence(payload));
   });
   register('experiments:image-read', (nodeId, evidenceId) => getStore().readEvidence(nodeId, evidenceId));
   register('weekly:sync', syncWeekly);
@@ -242,6 +246,7 @@ async function initialize() {
     try { shell.openExternal(httpsUrl(url)).catch(() => {}); } catch {}
     return { action: 'deny' };
   });
+  win.on('leave-full-screen', () => win?.webContents.send('window:focus-mode', false));
   win.webContents.on('will-navigate', (event, url) => { if (!url.startsWith('neuroshelf://app/')) event.preventDefault(); });
   win.webContents.on('will-attach-webview', event => event.preventDefault());
   ipcMain.on('app:close-ready', async (event, ok) => {
@@ -305,9 +310,10 @@ async function initialize() {
       const readerImage = await win.webContents.capturePage();
       await fs.writeFile(path.join(app.getPath('userData'), 'desktop-reader.png'), readerImage.toPNG());
       console.log('PDF_RENDER_OK: local PDF bytes, worker, canvas and selectable text work in the desktop app.');
+      const focusChecks = await require('./focus-smoke.cjs').runFocusSmoke({ win, store: getStore(), waitFor, codex, directory: app.getPath('userData') });
       const shortcuts = await require('./shortcut-smoke.cjs').runShortcutSmoke({ win, store: getStore(), waitFor, register, codex, getEffort: () => prefs.effort });
       const readerChecks = await require('./reader-smoke.cjs').runReaderSmoke({ win, store: getStore(), waitFor, directory: app.getPath('userData') });
-      await fs.writeFile(path.join(app.getPath('userData'), 'smoke-result.json'), JSON.stringify({ bridge: true, papers: 107, pdfRendered: true, clipboard: true, ...locationChecks, ...languageChecks, ...layoutChecks, ...shortcuts, ...readerChecks, ...weeklyChecks, ...projectChecks, ...reviewChecks, ...experimentChecks }));
+      await fs.writeFile(path.join(app.getPath('userData'), 'smoke-result.json'), JSON.stringify({ bridge: true, papers: 107, pdfRendered: true, clipboard: true, ...focusChecks, ...locationChecks, ...languageChecks, ...layoutChecks, ...shortcuts, ...readerChecks, ...weeklyChecks, ...projectChecks, ...reviewChecks, ...experimentChecks }));
       await win.webContents.executeJavaScript(`[...document.querySelectorAll('.document-tabs button')].find(b=>b.textContent.includes('我的笔记')).click()`);
       await waitFor(`Boolean(document.querySelector('textarea[aria-label="论文笔记"]'))`);
       await win.webContents.executeJavaScript(`(()=>{const input=document.querySelector('textarea[aria-label="论文笔记"]');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(input,'Desktop close flush sentinel');input.dispatchEvent(new Event('input',{bubbles:true}));})()`);

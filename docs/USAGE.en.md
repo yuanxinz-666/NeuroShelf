@@ -1,4 +1,4 @@
-# NeuroShelf 0.8.2 user guide
+# NeuroShelf 0.9.0 user guide
 
 **English** · [简体中文](USAGE.zh-CN.md) · [Project home](../README.md)
 
@@ -14,7 +14,7 @@ Language preferences are stored in `%APPDATA%\NeuroShelf\preferences.json`, sepa
 
 ## Open and update
 
-Download `NeuroShelf-0.8.2-Windows.exe` from the [repository's Releases](https://github.com/yuanxinz-666/NeuroShelf/releases). Keep the portable Windows x64 executable in a permanent folder and double-click it. The app extracts when launched; its library is stored separately in local application data.
+Download `NeuroShelf-0.9.0-Windows.exe` from the [repository's Releases](https://github.com/yuanxinz-666/NeuroShelf/releases). Keep the portable Windows x64 executable in a permanent folder and double-click it. The app extracts when launched; its library is stored separately in local application data.
 
 To create a desktop shortcut, right-click the EXE and use Windows' **Show more options → Send to → Desktop (create shortcut)**. When updating, point an existing shortcut to the new executable.
 
@@ -55,6 +55,30 @@ Configure AI in **Settings & AI**:
 This version uses the GPT-6 Astra model configuration and offers low, medium, high, xhigh, max and ultra reasoning effort. The connection checks available model and effort capabilities. Visible options do not grant access your account lacks. An effort change applies to the next question; an answer in progress retains its original effort.
 
 Questions include selected text, page context and recent conversation. Images and related pages are attached only when you choose them. Local reading, reviews, notes and experiment records do not require AI. Windows encrypts the API key locally; it is not included in library backups.
+
+## Focus reading and keyboard shortcuts
+
+Open a PDF and click **Focus reading** or press **F11**. The app enters native fullscreen, hides navigation and the permanent sidebar, and uses a black surround while preserving the paper's original colors. Move the mouse to the top edge to reveal page, zoom, search, save and exit controls.
+
+Drag over PDF text with the left mouse button. Color tools appear beside the selection. Click a color to mark it, **Annotate** to write a margin note, or **Explain selection** / **Space** to open the floating AI assistant. The assistant appears on the opposite side of the selection and can be resized. It uses your existing AI connection and effort setting. Selecting text alone does not send a request.
+
+**Esc** dismisses the assistant or selection tools first; press it again to leave fullscreen. Clicking the black surround also dismisses the assistant after saving pending records. F11 toggles focus reading directly.
+
+| Shortcut | Action |
+| --- | --- |
+| F11 | Enter / leave focus reading |
+| Esc | Dismiss floating tools or leave focus reading |
+| Space | Explain selected PDF text |
+| Ctrl S | Save pending paper and experiment records immediately; save settings/project forms when open |
+| Ctrl Z | Undo the last edit |
+| Ctrl Y / Ctrl Shift Z | Redo the last edit |
+| Ctrl F | Find text in the current PDF |
+| Ctrl K | Focus the workspace search box |
+| Ctrl O | Open PDF import |
+| Left / Right / Page Up / Page Down | Previous / next PDF page |
+| F1 / Ctrl / | Show keyboard shortcuts |
+
+Text fields keep their normal text undo, redo, copy and paste. Outside text fields, undo covers highlights, comments, paper metadata/reviews/notes, PI follows/notes and experiment edits in the current session, separately for each project (up to 100 edits). It preserves independently saved AI replies and reading positions. Importing PDFs, restoring backups and sending AI requests are outside this edit history. Undo/redo results save to disk; the history resets when the app closes. Ctrl S complements autosave and does not export a backup.
 
 ## Candidate papers and PIs
 
@@ -113,7 +137,7 @@ For a complete move to another Windows computer, exit the app and copy the whole
 Compare the release's `SHA256SUMS.txt` with the hash produced by PowerShell:
 
 ```powershell
-Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.8.2-Windows.exe'
+Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.9.0-Windows.exe'
 ```
 
 For problems, open a [GitHub issue](https://github.com/yuanxinz-666/NeuroShelf/issues) with the version, reproduction steps and error message. Remove personal research content from screenshots or logs before posting them publicly.

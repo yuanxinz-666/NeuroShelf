@@ -1,4 +1,4 @@
-# NeuroShelf 0.8.2 使用说明
+# NeuroShelf 0.9.0 使用说明
 
 [English](USAGE.en.md) · **简体中文** · [项目首页](../README.zh-CN.md)
 
@@ -14,7 +14,7 @@
 
 ## 打开与升级
 
-从 [官方仓库 Releases](https://github.com/yuanxinz-666/NeuroShelf/releases) 下载 `NeuroShelf-0.8.2-Windows.exe`。这是 Windows x64 免安装版，将文件放在固定位置后双击运行。第一次打开会先解包，后续的文库保存在本机应用数据目录。
+从 [官方仓库 Releases](https://github.com/yuanxinz-666/NeuroShelf/releases) 下载 `NeuroShelf-0.9.0-Windows.exe`。这是 Windows x64 免安装版，将文件放在固定位置后双击运行。第一次打开会先解包，后续的文库保存在本机应用数据目录。
 
 需要桌面入口时，可以右键 EXE，在 Windows 的“显示更多选项 → 发送到 → 桌面快捷方式”中创建。已有的开发目录快捷方式可以继续使用，不必重复导入文库。
 
@@ -55,6 +55,31 @@ AI 在“设置与 AI 连接”中配置：
 本版界面固定 GPT-6 Astra，并提供 low、medium、high、xhigh、max、ultra 推理强度选项。连接时会检查账号可用的模型和档位；界面选项不代表账号一定有对应权限。切换档位影响下一次提问，已经生成中的回答保留原档位。
 
 提问会发送选区、当前页文字和近期对话；图片或相关页由你主动附加。阅读、个人评价、笔记和实验记录本身无需 AI 连接。API Key 由 Windows 加密保存在本机，不包含在文库备份中。
+
+## 专注阅读与快捷键
+
+打开 PDF 后点击“专注阅读”或按 **F11**，进入真正的全屏。导航和常驻侧栏隐藏，论文周围变为黑色，论文页面保持原来的颜色。鼠标移到顶部边缘，可显示翻页、缩放、查找、保存和退出工具。
+
+用鼠标左键拖选 PDF 原文，选区附近会弹出颜色工具。点击颜色可高亮，点击“写旁注”可记录理解；按 **空格**或点击“解释这段”，AI 助手会浮现在选区另一侧，宽度仍可调整，并沿用当前 AI 连接与推理强度。仅选择原文不会发起提问。
+
+**Esc** 先收起助手或选区工具，再按一次退出全屏。点击论文周围的黑色区域也可收起助手，并保存尚未写入的记录。F11 可以直接切换专注模式。
+
+| 快捷键 | 功能 |
+| --- | --- |
+| F11 | 进入／退出专注阅读 |
+| Esc | 收起浮窗或退出专注阅读 |
+| 空格 | 让 AI 解释选中的 PDF 原文 |
+| Ctrl S | 立即保存论文、旁注与实验草稿；设置／项目表单打开时保存表单 |
+| Ctrl Z | 撤销上一步编辑 |
+| Ctrl Y / Ctrl Shift Z | 重做上一步编辑 |
+| Ctrl F | 查找当前 PDF 原文 |
+| Ctrl K | 聚焦工作区搜索框 |
+| Ctrl O | 打开 PDF 导入 |
+| 左／右方向键、Page Up／Page Down | PDF 上一页／下一页 |
+| F1 / Ctrl / | 查看快捷键说明 |
+
+输入框内保留文字的撤销、重做、复制与粘贴；在其他位置，撤销作用于本次打开期间的高亮、旁注、文献信息／评价／笔记、PI 关注／备注和实验编辑，按项目分别记录，最多 100 步。独立保存的 AI 回复和阅读位置保留。导入 PDF、恢复备份和已发送的 AI 请求不属于此编辑历史。撤销后的结果会保存，关闭软件后撤销历史重新开始。Ctrl S 补充原有自动保存，不会导出完整备份。
+
 
 ## 候选论文和 PI
 
@@ -113,7 +138,7 @@ resources/                补充资料
 发布页同时提供 `SHA256SUMS.txt`，可在 PowerShell 中计算并对照：
 
 ```powershell
-Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.8.2-Windows.exe'
+Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.9.0-Windows.exe'
 ```
 
 遇到问题请在 [GitHub Issues](https://github.com/yuanxinz-666/NeuroShelf/issues) 说明版本、操作步骤和错误提示。截图与日志如包含个人笔记或研究数据，请先自行去除再公开。

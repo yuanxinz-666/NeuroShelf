@@ -1,5 +1,15 @@
 # 更新记录
 
+## 0.9.0 · 2026-09-08
+
+Add fullscreen focus reading with a black surround, contextual color/comment tools and a floating AI assistant. Workspace shortcuts save pending drafts, undo/redo user edits, find text, change pages and open help. Text fields retain native editing shortcuts; per-project edit history preserves independent AI replies and reading positions.
+
+- F11 进入全屏专注阅读，鼠标移到顶部显示工具栏，Esc 收起浮窗或退出。
+- 原文拖选后弹出颜色与旁注工具，空格或点击解释打开浮动 AI；原有会员连接和推理强度继续使用。
+- Ctrl S 立即保存草稿，Ctrl Z／Ctrl Y／Ctrl Shift Z 撤销与重做；查找、搜索、导入、翻页及 F1 帮助快捷键。
+- 按项目记录本次会话的用户编辑；撤销只修改相关字段，保留独立写入的数据，失败时保留原记录。
+- 中英文控制与说明同步更新，增加原生全屏、鼠标选区、按键、保存到磁盘和撤销回归检查。
+
 ## 0.8.2 · 2026-09-08
 
 Add editable progress summaries beneath experiment step titles, with autosave, search, list previews and backup/export support. Project navigation, library information, experiment details and the reading sidebar all support independent, remembered widths, keyboard adjustment and double-click reset.
