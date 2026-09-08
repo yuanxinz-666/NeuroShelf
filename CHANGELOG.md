@@ -1,5 +1,14 @@
 # 更新记录
 
+## 0.9.1 · 2026-09-08
+
+Focus reading now displays the complete PDF as a continuous document. A persistent bottom pager supports previous/next and direct page entry. Hovering at the right edge opens the AI sidebar without submitting a request. Scrolling updates the reading position and AI page context; highlights remain anchored to their original pages. Pages are rendered near the viewport to limit memory use.
+
+- 专注模式可用滚轮连续阅读整篇 PDF；底部常驻翻页按钮与页码跳转。
+- 鼠标移到右侧边缘即可打开 AI，收起后保留提问草稿。
+- 翻页同步 AI 原文和当前页附图；高亮、旁注与阅读位置保持正确页码。
+- 增加混合纸张尺寸、长文档绘制范围、原生滚轮、悬停及跨页 AI 上下文验证。
+
 ## 0.9.0 · 2026-09-08
 
 Add fullscreen focus reading with a black surround, contextual color/comment tools and a floating AI assistant. Workspace shortcuts save pending drafts, undo/redo user edits, find text, change pages and open help. Text fields retain native editing shortcuts; per-project edit history preserves independent AI replies and reading positions.

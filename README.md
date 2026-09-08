@@ -6,7 +6,7 @@
 
 NeuroShelf is a Windows research workspace with English and Simplified Chinese interfaces. It grew from an SC–SNr / Pitx2 literature map into a project library, PDF reader, AI reading assistant, PI directory and experiment notebook. Create separate projects for other research questions.
 
-[Download for Windows · 0.9.0](https://github.com/yuanxinz-666/NeuroShelf/releases/download/v0.9.0/NeuroShelf-0.9.0-Windows.exe) · [All releases](https://github.com/yuanxinz-666/NeuroShelf/releases) · [User guide](docs/USAGE.en.md) · [Report an issue](https://github.com/yuanxinz-666/NeuroShelf/issues)
+[Download for Windows · 0.9.1](https://github.com/yuanxinz-666/NeuroShelf/releases/download/v0.9.1/NeuroShelf-0.9.1-Windows.exe) · [All releases](https://github.com/yuanxinz-666/NeuroShelf/releases) · [User guide](docs/USAGE.en.md) · [Report an issue](https://github.com/yuanxinz-666/NeuroShelf/issues)
 
 ## From reading to experiments
 
@@ -24,7 +24,7 @@ NeuroShelf is a Windows research workspace with English and Simplified Chinese i
 
 ### Focus on the paper
 
-Press **F11** for fullscreen PDF reading with a black surround. Select text to reveal color and comment tools; press **Space** or click **Explain selection** to open the floating AI assistant. **Esc** dismisses tools or leaves fullscreen. Use **Ctrl S** to save, **Ctrl Z** to undo and **Ctrl Y** to redo; **F1** shows all shortcuts.
+Press **F11** to read the complete PDF continuously in fullscreen with a black surround. Scroll through page boundaries, use the always-visible page controls below, or type a page number. Move to the right edge to open the AI sidebar without selecting text. Select text to reveal color and comment tools; press **Space** or click **Explain selection** to open the floating AI assistant. **Esc** dismisses tools or leaves fullscreen. Use **Ctrl S** to save, **Ctrl Z** to undo and **Ctrl Y** to redo; **F1** shows all shortcuts.
 
 ![Focus reading with selection tools, using a synthetic test PDF](docs/screenshots/focus-reading.png)
 
@@ -54,7 +54,7 @@ Switching languages preserves the current page and editing drafts. Paper text, t
 
 ## Use on Windows
 
-1. Download `NeuroShelf-0.9.0-Windows.exe` from [Releases](https://github.com/yuanxinz-666/NeuroShelf/releases/latest), keep it in a permanent folder and double-click it.
+1. Download `NeuroShelf-0.9.1-Windows.exe` from [Releases](https://github.com/yuanxinz-666/NeuroShelf/releases/latest), keep it in a permanent folder and double-click it.
 2. Open the sample project or create your own. Import PDFs you have downloaded and link them to the corresponding papers.
 3. Configure a connection in **Settings & AI** when you want AI assistance. Local reading, notes and experiment records work independently.
 
@@ -86,11 +86,11 @@ pnpm test:desktop
 # Build release/win-unpacked/NeuroShelf.exe
 pnpm package
 
-# Build release/NeuroShelf-0.9.0-Windows.exe
+# Build release/NeuroShelf-0.9.1-Windows.exe
 pnpm dist
 
 # Verify the portable executable
-node scripts/smoke-desktop.cjs release/NeuroShelf-0.9.0-Windows.exe
+node scripts/smoke-desktop.cjs release/NeuroShelf-0.9.1-Windows.exe
 ```
 
 `pnpm dev` runs the frontend preview only. Verify native file, PDF and AI integration in Electron. Source launches use the same application data location by default; set `NEUROSHELF_DATA_DIR` to a temporary directory for isolated development.

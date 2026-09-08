@@ -1218,5 +1218,16 @@
   "选中文字后点击工具或按空格 · F11 / Esc 退出 · 鼠标移到顶部显示工具栏": "Select text, then click a tool or press Space · F11 / Esc to exit · Move to the top for controls",
   "相关记录已改变，无法安全撤销或重做。": "This record has changed since the edit; undo or redo cannot be applied safely.",
   "撤销操作无效。": "Invalid undo or redo action.",
-  "专注模式设置无效。": "Invalid focus mode setting."
+  "专注模式设置无效。": "Invalid focus mode setting.",
+  "滚轮连续阅读整篇 PDF · 右侧边缘打开 AI · 底部翻页 · F11 / Esc 退出": "Scroll through the whole PDF · Right edge for AI · Page controls below · F11 / Esc to exit",
+  "专注阅读翻页": "Focus reading page navigation",
+  "专注模式上一页": "Previous page in focus reading",
+  "专注模式下一页": "Next page in focus reading",
+  "专注模式页码": "Focus reading page number",
+  "滚轮连续阅读": "Scroll to read continuously",
+  "从右侧打开 AI 助手": "Open AI assistant from the right",
+  "鼠标移到右侧即可打开 AI 助手": "Move to the right edge to open the AI assistant",
+  "正在准备整篇 PDF…": "Preparing the complete PDF…",
+  "正在显示第 {0} 页": "Rendering page {0}",
+  "此页没有文字层，可从右侧 AI 助手附上当前页图片提问。": "This page has no text layer. Open AI from the right edge and attach the current page image."
 }

@@ -22,6 +22,7 @@ child.on('exit', code => {
   clearTimeout(timer); console.log(output.trim());
   if (code !== 0 || !fs.existsSync(path.join(dataDir, 'smoke-result.json'))) { console.error(errors.slice(-8000)); const failure = path.join(dataDir, 'smoke-error.txt'); if (fs.existsSync(failure)) console.error(fs.readFileSync(failure, 'utf8')); process.exitCode = 1; return; }
   const report = JSON.parse(fs.readFileSync(path.join(dataDir, 'smoke-result.json'), 'utf8'));
+  if (!report.continuousReading || !report.hoverAi) { console.error('Continuous reading or right-edge AI hover failed'); process.exitCode = 1; return; }
   if (!report.focusReading || !report.workspaceShortcuts) { console.error('Focus reading or workspace shortcuts failed'); process.exitCode = 1; return; }
   if (!report.adjustableSidebars || !report.experimentProgress) { console.error('Resizable sidebars or inline experiment progress failed'); process.exitCode = 1; return; }
   if (!report.projectLocation) { console.error('Existing project folder, PI follows or detailed profiles did not survive the switch'); process.exitCode = 1; return; }

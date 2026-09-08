@@ -1,4 +1,4 @@
-# NeuroShelf 0.9.0 user guide
+# NeuroShelf 0.9.1 user guide
 
 **English** · [简体中文](USAGE.zh-CN.md) · [Project home](../README.md)
 
@@ -14,7 +14,7 @@ Language preferences are stored in `%APPDATA%\NeuroShelf\preferences.json`, sepa
 
 ## Open and update
 
-Download `NeuroShelf-0.9.0-Windows.exe` from the [repository's Releases](https://github.com/yuanxinz-666/NeuroShelf/releases). Keep the portable Windows x64 executable in a permanent folder and double-click it. The app extracts when launched; its library is stored separately in local application data.
+Download `NeuroShelf-0.9.1-Windows.exe` from the [repository's Releases](https://github.com/yuanxinz-666/NeuroShelf/releases). Keep the portable Windows x64 executable in a permanent folder and double-click it. The app extracts when launched; its library is stored separately in local application data.
 
 To create a desktop shortcut, right-click the EXE and use Windows' **Show more options → Send to → Desktop (create shortcut)**. When updating, point an existing shortcut to the new executable.
 
@@ -58,9 +58,13 @@ Questions include selected text, page context and recent conversation. Images an
 
 ## Focus reading and keyboard shortcuts
 
-Open a PDF and click **Focus reading** or press **F11**. The app enters native fullscreen, hides navigation and the permanent sidebar, and uses a black surround while preserving the paper's original colors. Move the mouse to the top edge to reveal page, zoom, search, save and exit controls.
+Open a PDF and click **Focus reading** or press **F11**. The app enters native fullscreen, hides navigation and the permanent sidebar, and uses a black surround while preserving the paper's original colors. The complete document is available in one continuous scroll. Page number and previous/next controls stay visible at the bottom; you can also type a page number and press Enter. Move the mouse to the top edge for zoom, search, save and exit controls.
+
+Move the mouse to the right edge (or click the AI tab) to open the AI sidebar at any time. Hovering does not submit a question; drafts remain when you dismiss and reopen it.
 
 Drag over PDF text with the left mouse button. Color tools appear beside the selection. Click a color to mark it, **Annotate** to write a margin note, or **Explain selection** / **Space** to open the floating AI assistant. The assistant appears on the opposite side of the selection and can be resized. It uses your existing AI connection and effort setting. Selecting text alone does not send a request.
+
+The visible page determines AI page context, image attachments and saved reading position. Highlighting keeps the original page number and location. Leaving and re-entering focus reading keeps the current page. Pages near the viewport are rendered as needed to limit memory use in long PDFs.
 
 **Esc** dismisses the assistant or selection tools first; press it again to leave fullscreen. Clicking the black surround also dismisses the assistant after saving pending records. F11 toggles focus reading directly.
 
@@ -137,7 +141,7 @@ For a complete move to another Windows computer, exit the app and copy the whole
 Compare the release's `SHA256SUMS.txt` with the hash produced by PowerShell:
 
 ```powershell
-Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.9.0-Windows.exe'
+Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.9.1-Windows.exe'
 ```
 
 For problems, open a [GitHub issue](https://github.com/yuanxinz-666/NeuroShelf/issues) with the version, reproduction steps and error message. Remove personal research content from screenshots or logs before posting them publicly.
