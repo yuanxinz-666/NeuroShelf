@@ -1,5 +1,14 @@
 # 更新记录
 
+## 0.8.2 · 2026-09-08
+
+Add editable progress summaries beneath experiment step titles, with autosave, search, list previews and backup/export support. Project navigation, library information, experiment details and the reading sidebar all support independent, remembered widths, keyboard adjustment and double-click reset.
+
+- 实验导图卡片新增“当前进展”文本框，保留原有详细记录与图片。
+- 进展支持自动保存、列表预览、搜索和导出；折叠、切换与关闭前保存草稿。
+- 四处侧栏可拖动调整并记住宽度；阅读导航拉宽后显示文字。
+- 修正 Windows 丢失鼠标捕获时的拖动结束状态，新增原资料兼容与交互回归检查。
+
 ## 0.8.1 · 2026-09-08
 
 Fix project storage selection after Windows updates. The running app now persists its own verified project location. Backup & transfer shows the active path and can reopen an existing project folder without replacing either library. An unavailable remembered folder no longer creates a fresh sample library.

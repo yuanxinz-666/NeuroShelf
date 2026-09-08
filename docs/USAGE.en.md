@@ -1,4 +1,4 @@
-# NeuroShelf 0.8.1 user guide
+# NeuroShelf 0.8.2 user guide
 
 **English** · [简体中文](USAGE.zh-CN.md) · [Project home](../README.md)
 
@@ -14,7 +14,7 @@ Language preferences are stored in `%APPDATA%\NeuroShelf\preferences.json`, sepa
 
 ## Open and update
 
-Download `NeuroShelf-0.8.1-Windows.exe` from the [repository's Releases](https://github.com/yuanxinz-666/NeuroShelf/releases). Keep the portable Windows x64 executable in a permanent folder and double-click it. The app extracts when launched; its library is stored separately in local application data.
+Download `NeuroShelf-0.8.2-Windows.exe` from the [repository's Releases](https://github.com/yuanxinz-666/NeuroShelf/releases). Keep the portable Windows x64 executable in a permanent folder and double-click it. The app extracts when launched; its library is stored separately in local application data.
 
 To create a desktop shortcut, right-click the EXE and use Windows' **Show more options → Send to → Desktop (create shortcut)**. When updating, point an existing shortcut to the new executable.
 
@@ -25,6 +25,12 @@ Existing users can export a project backup before updating. Exit the old version
 Open **Backup & transfer** to see **Current project storage location**. PI counts, follows, detailed profiles, PDFs and experiments belong to that project folder. If an update shows the initial sample library instead, choose **Open existing project storage folder** and select the existing folder containing `index.json` and the project subfolders. The app validates it, saves the location through its own Windows process and reloads the library. Language and AI connection preferences remain unchanged.
 
 This opens the selected folder without merging or deleting either library. Keep backups of both if you have edited both locations. A remembered folder that becomes unavailable now produces an error instead of creating a replacement sample library. Reconnect its drive or restore its location and retry.
+
+## Adjust sidebar widths
+
+Drag the divider beside project navigation, the library information panel, experiment details, or the reading AI/annotation panel. Each width is saved independently on this computer. Reading mode has its own navigation width; widen its icon strip to show navigation labels.
+
+Double-click a divider to restore its default. Focus it and use the left/right arrow keys to adjust the width, or Home/End for the minimum/maximum. Widths adapt to the available window space while keeping your preference for a larger window.
 
 ## Projects and papers
 
@@ -72,6 +78,8 @@ Automatic Monday screening requires a personal scheduler configured separately. 
 
 Open **Experiments** in a project and create an experiment, then add substeps. The tree-shaped mind map lays itself out automatically. You can switch to a step list, collapse branches, zoom, pan or change a step's parent.
 
+Each mind-map card now has a **Current progress** text box below its title. Write a short summary of what is complete, what is pending, or the next checkpoint (up to 2,000 characters). It saves automatically and appears in the step list, search results, Markdown exports and full backups. Detailed method/results records remain separate.
+
 For each step, record its status, planned or experimental date, purpose, method and results, next action and open questions. Statuses are planned, in progress, completed and blocked. Completion is calculated from the number of steps.
 
 Add evidence images by choosing files, dropping them or pasting them. Supported formats are PNG, JPEG and WebP, with a limit of 20 MB and 40 million pixels per image, and 60 images per step. Add captions, preview images or save an original. Originals are copied into the project's library. Archive unused branches and restore them later.
@@ -105,7 +113,7 @@ For a complete move to another Windows computer, exit the app and copy the whole
 Compare the release's `SHA256SUMS.txt` with the hash produced by PowerShell:
 
 ```powershell
-Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.8.1-Windows.exe'
+Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.8.2-Windows.exe'
 ```
 
 For problems, open a [GitHub issue](https://github.com/yuanxinz-666/NeuroShelf/issues) with the version, reproduction steps and error message. Remove personal research content from screenshots or logs before posting them publicly.

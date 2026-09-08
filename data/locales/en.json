@@ -1184,5 +1184,12 @@
   "打开已有项目资料夹": "Open existing project storage folder",
   "选择含 index.json 的资料夹。软件会验证并记住位置；当前资料夹仍保留。": "Choose the folder containing index.json. The app verifies and remembers its location; the current folder is retained.",
   "已保存的项目资料夹无法读取。请检查磁盘或同步状态；现有资料未被覆盖。": "The saved project folder is unavailable. Check the drive or sync status; existing data has not been overwritten.",
-  "请选择已有 NeuroShelf 项目资料夹，其中应包含 index.json。": "Choose an existing NeuroShelf project storage folder containing index.json."
+  "请选择已有 NeuroShelf 项目资料夹，其中应包含 index.json。": "Choose an existing NeuroShelf project storage folder containing index.json.",
+  "当前进展": "Current progress",
+  "这一步完成到哪里了？": "How far has this step progressed?",
+  "实验当前进展：{0}": "Current experiment progress: {0}",
+  "当前进展：\n": "Current progress:\n",
+  "调整项目导航宽度": "Resize project navigation",
+  "调整文库信息栏宽度": "Resize library information sidebar",
+  "调整实验详情栏宽度": "Resize experiment details sidebar"
 }

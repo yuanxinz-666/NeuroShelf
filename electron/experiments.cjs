@@ -6,7 +6,7 @@ const validId = value => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,90}$/.te
 const imageName = value => typeof value === 'string' && /^[a-f0-9]{64}\.(png|jpg|webp)$/.test(value);
 const statuses = new Set(['planned', 'active', 'done', 'blocked']);
 const emptyExperiments = () => ({ version: 1, nodes: [] });
-const textLimits = { title: 180, objective: 10000, record: 100000, nextStep: 10000 };
+const textLimits = { title: 180, progress: 2000, objective: 10000, record: 100000, nextStep: 10000 };
 function validateExperiments(data) {
   if (!data || data.version !== 1 || !Array.isArray(data.nodes) || data.nodes.length > 600) throw new Error('实验记录格式无效，最多支持 600 个步骤。');
   const byId = new Map();
@@ -14,7 +14,11 @@ function validateExperiments(data) {
     if (!validId(node.id) || byId.has(node.id)) throw new Error('实验步骤编号无效或重复。');
     byId.set(node.id, node);
     if (!statuses.has(node.status) || typeof node.archived !== 'boolean') throw new Error('实验状态无效。');
-    for (const [key, limit] of Object.entries(textLimits)) if (typeof node[key] !== 'string' || node[key].length > limit) throw new Error('实验文字格式无效或过长。');
+    // Earlier project files have no progress summary; retain them without rewriting their records.
+    for (const [key, limit] of Object.entries(textLimits)) {
+      if (key === 'progress' && node[key] === undefined) continue;
+      if (typeof node[key] !== 'string' || node[key].length > limit) throw new Error('实验文字格式无效或过长。');
+    }
     if (!node.title.trim()) throw new Error('请给实验步骤填写名称。');
     if (typeof node.date !== 'string' || node.date && (!/^\d{4}-\d{2}-\d{2}$/.test(node.date) || !Number.isFinite(Date.parse(node.date)) || new Date(node.date).toISOString().slice(0, 10) !== node.date)) throw new Error('实验日期无效。');
     if (!Number.isFinite(Date.parse(node.createdAt)) || !Number.isFinite(Date.parse(node.updatedAt))) throw new Error('实验记录时间无效。');
@@ -64,7 +68,7 @@ function mutate(data, change) {
   const now = new Date().toISOString(); let selectedId = change.id;
   if (change.action === 'add') {
     selectedId = 'exp_' + crypto.randomUUID();
-    data.nodes.push({ id: selectedId, parentId: change.parentId ?? null, title: change.title || '新的实验步骤', status: 'planned', objective: '', record: '', nextStep: '', date: '', evidence: [], archived: false, createdAt: now, updatedAt: now });
+    data.nodes.push({ id: selectedId, parentId: change.parentId ?? null, title: change.title || '新的实验步骤', status: 'planned', progress: '', objective: '', record: '', nextStep: '', date: '', evidence: [], archived: false, createdAt: now, updatedAt: now });
   } else {
     const node = find(data, change.id);
     if (change.action === 'update') {

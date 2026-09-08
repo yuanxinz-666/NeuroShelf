@@ -18,6 +18,28 @@ async function runExperimentsSmoke({ win, projects, waitFor, directory }) {
   await run(`document.querySelector('.nav-item[title="实验进程"]').click()`); await waitFor(`Boolean(document.querySelector('.exp-empty'))`);
   assert.equal(store.get().experiments, undefined);
   const rootId = await add('视觉行为实验路线（测试）', 'active');
+  const progressSelector = `.exp-map-node[data-node-id="${rootId}"] textarea`;
+  await run(set(progressSelector, '已完成 3 / 5 个样本\n等待下一次记录') + `document.querySelectorAll('.exp-view-switch button')[1].click()`);
+  await waitFor(`Boolean(document.querySelector('.exp-list-progress'))`);
+  assert.equal(store.get().experiments.nodes[0].progress, '已完成 3 / 5 个样本\n等待下一次记录');
+  assert.match(await run(`document.querySelector('.exp-list-item').innerText`), /3 \/ 5/);
+  await run(`document.querySelectorAll('.exp-view-switch button')[0].click()`);
+  await waitFor(`Boolean(document.querySelector(${JSON.stringify(progressSelector)}))`);
+  const beforePan = await run(`({left:document.querySelector('.exp-map-viewport').scrollLeft,top:document.querySelector('.exp-map-viewport').scrollTop})`);
+  await run(`(() => { const input = document.querySelector(${JSON.stringify(progressSelector)}); input.focus(); input.setSelectionRange(input.value.length,input.value.length); })()`);
+  win.webContents.sendInputEvent({ type: 'char', keyCode: ' ' });
+  await waitFor(`document.querySelector(${JSON.stringify(progressSelector)}).value.endsWith(' ') && document.querySelector('.exp-node-progress .exp-save')?.dataset.saveState === 'saved'`);
+  assert.ok(store.get().experiments.nodes[0].progress.endsWith(' '));
+  assert.equal(await run(`document.querySelector('.exp-map-viewport').scrollLeft`), beforePan.left);
+  const expandedWidth = await require('./layout-smoke.cjs').dragSidebar({ win, waitFor, handle: '.experiment-resizer', target: '.exp-editor', delta: -72 });
+  await win.reload();
+  await waitFor(`Boolean(document.querySelector('.nav-item[title="实验进程"]'))`);
+  await run(`document.querySelector('.nav-item[title="实验进程"]').click()`);
+  await waitFor(`Boolean(document.querySelector(${JSON.stringify(progressSelector)}))`); await select(rootId);
+  assert.equal(await run(`document.querySelector('.exp-editor').getBoundingClientRect().width`), expandedWidth);
+  assert.ok((await run(`document.querySelector(${JSON.stringify(progressSelector)}).value`)).includes('3 / 5'));
+  await run(`document.querySelector('.experiment-resizer').dispatchEvent(new MouseEvent('dblclick',{bubbles:true}))`);
+  await waitFor(`document.querySelector('.exp-editor').getBoundingClientRect().width === 366`);
   await run(set('textarea[aria-label="实验目的"]', '示例：记录实验目的与对照条件') + set('textarea[aria-label="实验过程与结果"]', '实验记录：这是隔离测试，不是实际科研结果。') + set('textarea[aria-label="实验下一步"]', '整理样本编号，并记录下一次实验条件。') + set('input[aria-label="实验日期"]', '2026-09-07') + `document.querySelector('.nav-item[title="PI 与实验室"]').click()`);
   await waitFor(`Boolean(document.querySelector('.people-page'))`);
   assert.equal(store.get().experiments.nodes[0].record, '实验记录：这是隔离测试，不是实际科研结果。');
@@ -45,6 +67,20 @@ async function runExperimentsSmoke({ win, projects, waitFor, directory }) {
   await select(rootId); const plannedId = await add('补充实验条件（测试）', 'planned', true);
   const blockedId = await add('样本与分析准备（测试）', 'blocked');
   await run(set('textarea[aria-label="实验下一步"]', '等待补齐批次信息后再继续。')); await saved();
+  // Failed inline saves must retain the textarea and block a view change until retry succeeds.
+  const originalChange = store.changeExperiment; let failProgress = true;
+  store.changeExperiment = function(change) { if (change.patch?.progress && failProgress) { failProgress = false; return Promise.reject(new Error('模拟进展保存失败')); } return originalChange.call(this, change); };
+  try {
+    await run(set(progressSelector, '进展保存失败后重试') + `document.querySelectorAll('.exp-view-switch button')[1].click()`);
+    await waitFor(`document.querySelector(${JSON.stringify(progressSelector)}).closest('.exp-node-progress').querySelector('.exp-save').dataset.saveState === 'error'`);
+    assert.equal(await run(`document.querySelector(${JSON.stringify(progressSelector)}).value`), '进展保存失败后重试');
+    await run(`document.querySelector(${JSON.stringify(progressSelector)}).closest('.exp-node-progress').querySelector('.exp-save button').click()`);
+    await waitFor(`document.querySelector(${JSON.stringify(progressSelector)}).closest('.exp-node-progress').querySelector('.exp-save').dataset.saveState === 'saved'`);
+  } finally { store.changeExperiment = originalChange; }
+  await run(set(progressSelector, '已完成 3 / 5 个样本；继续补充对照') + set(`.exp-map-node[data-node-id="${doneId}"] textarea`, '预实验记录已整理，待核对原始数据') + `document.querySelector('.exp-fold').click()`);
+  await waitFor(`!document.querySelector('.exp-map-node[data-node-id="${doneId}"]')`);
+  assert.equal(store.get().experiments.nodes.find(n => n.id === doneId).progress, '预实验记录已整理，待核对原始数据');
+  await run(`document.querySelector('.exp-fold').click()`); await waitFor(`Boolean(document.querySelector('.exp-map-node[data-node-id="${doneId}"]'))`);
   // Fold and unfold, reparent safely, then restore the original branch.
   await run(`document.querySelector('.exp-fold').click()`); await waitFor(`!document.querySelector('.exp-map-node[data-node-id="${doneId}"]')`);
   await run(`document.querySelector('.exp-fold').click()`); await waitFor(`Boolean(document.querySelector('.exp-map-node[data-node-id="${doneId}"]'))`);
@@ -90,6 +126,6 @@ async function runExperimentsSmoke({ win, projects, waitFor, directory }) {
   win.setBounds(bounds); await tick();
   await run(`document.querySelector('.nav-item[title="全部文献"]').click()`); await waitFor(`Boolean(document.querySelector('.paper-card'))`);
   console.log('EXPERIMENTS_OK: tree, drafts, failure retry, images, preview, archive, restore, project isolation and 1180px layout.');
-  return { experiments: true, experimentCloseNodeId: rootId };
+  return { experiments: true, experimentProgress: true, experimentCloseNodeId: rootId };
 }
 module.exports = { runExperimentsSmoke };

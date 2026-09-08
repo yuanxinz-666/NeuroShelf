@@ -13,6 +13,33 @@ async function setup(t) {
   return { store, dir };
 }
 const add = async (store, title, parentId = null) => (await store.changeExperiment({ action: 'add', title, parentId })).selectedId;
+
+test('legacy experiment records accept progress summaries without changing detailed research or evidence', async t => {
+  const { store, dir } = await setup(t), id = await add(store, '原有实验');
+  await store.changeExperiment({ action: 'update', id, patch: { record: '原始过程与结果', nextStep: '补充对照条件' } });
+  await store.importEvidence({ nodeId: id, name: 'evidence.png', bytes: fixture });
+  const legacy = store.get(); delete legacy.experiments.nodes[0].progress;
+  await store.commit(legacy);
+  const reopened = new LibraryStore(store.directory, seed); await reopened.init();
+  const summary = '已完成 3 / 5 个样本\n等待下一次记录';
+  await reopened.changeExperiment({ action: 'update', id, patch: { progress: summary } });
+  const backup = await reopened.backup(dir), restored = new LibraryStore(path.join(dir, 'progress-restore'), seed);
+  await restored.init(); await restored.restore(path.join(backup, 'library.json'));
+  const node = restored.get().experiments.nodes[0];
+  assert.equal(node.progress, summary); assert.equal(node.record, '原始过程与结果'); assert.equal(node.nextStep, '补充对照条件');
+  assert.deepEqual(await restored.readEvidence(id, node.evidence[0].id), fixture);
+});
+
+test('invalid progress summaries leave saved experiment data intact and clearing a summary persists', async t => {
+  const { store } = await setup(t), id = await add(store, '进展校验');
+  await store.changeExperiment({ action: 'update', id, patch: { progress: '已有进展' } });
+  const before = store.get();
+  for (const progress of [null, 42, {}, 'x'.repeat(2001)]) await assert.rejects(store.changeExperiment({ action: 'update', id, patch: { progress } }));
+  assert.deepEqual(store.get(), before);
+  await store.changeExperiment({ action: 'update', id, patch: { progress: '' } });
+  const reopened = new LibraryStore(store.directory, seed); await reopened.init();
+  assert.equal(reopened.get().experiments.nodes[0].progress, '');
+});
 test('experiment drafts, hierarchy, states and notes survive concurrent writes and reopening', async t => {
   const { store } = await setup(t); const parent = await add(store, '实验路线'), child = await add(store, '记录步骤', parent);
   await Promise.all([store.changeExperiment({ action: 'update', id: child, patch: { record: '观察不等于结论\n记录原始条件', status: 'active', date: '2026-09-07' } }), store.update('p001', { personalReview: '原有论文笔记' }), store.changeExperiment({ action: 'update', id: parent, patch: { nextStep: '补充对照' } })]);

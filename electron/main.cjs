@@ -272,6 +272,7 @@ async function initialize() {
     };
     const locationChecks = await require('./project-location-smoke.cjs').runProjectLocationSmoke({ win, projects, directory: app.getPath('userData'), waitFor: languageWaitFor });
     const languageChecks = await require('./language-smoke.cjs').runLanguageSmoke({ win, directory: app.getPath('userData'), waitFor: languageWaitFor });
+    const layoutChecks = await require('./layout-smoke.cjs').runLayoutSmoke({ win, waitFor: languageWaitFor });
     const result = await win.webContents.executeJavaScript(`(async()=>({title:document.title, text:document.body.innerText, bridge:Boolean(window.neuroshelf), keyExposed:'key' in await window.neuroshelf.settings()}))()`);
     await win.webContents.executeJavaScript(`window.neuroshelf.copyText('NeuroShelf clipboard verification')`);
     if (clipboard.readText() !== 'NeuroShelf clipboard verification') throw new Error('Desktop clipboard test failed.');
@@ -306,7 +307,7 @@ async function initialize() {
       console.log('PDF_RENDER_OK: local PDF bytes, worker, canvas and selectable text work in the desktop app.');
       const shortcuts = await require('./shortcut-smoke.cjs').runShortcutSmoke({ win, store: getStore(), waitFor, register, codex, getEffort: () => prefs.effort });
       const readerChecks = await require('./reader-smoke.cjs').runReaderSmoke({ win, store: getStore(), waitFor, directory: app.getPath('userData') });
-      await fs.writeFile(path.join(app.getPath('userData'), 'smoke-result.json'), JSON.stringify({ bridge: true, papers: 107, pdfRendered: true, clipboard: true, ...locationChecks, ...languageChecks, ...shortcuts, ...readerChecks, ...weeklyChecks, ...projectChecks, ...reviewChecks, ...experimentChecks }));
+      await fs.writeFile(path.join(app.getPath('userData'), 'smoke-result.json'), JSON.stringify({ bridge: true, papers: 107, pdfRendered: true, clipboard: true, ...locationChecks, ...languageChecks, ...layoutChecks, ...shortcuts, ...readerChecks, ...weeklyChecks, ...projectChecks, ...reviewChecks, ...experimentChecks }));
       await win.webContents.executeJavaScript(`[...document.querySelectorAll('.document-tabs button')].find(b=>b.textContent.includes('我的笔记')).click()`);
       await waitFor(`Boolean(document.querySelector('textarea[aria-label="论文笔记"]'))`);
       await win.webContents.executeJavaScript(`(()=>{const input=document.querySelector('textarea[aria-label="论文笔记"]');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(input,'Desktop close flush sentinel');input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
@@ -317,6 +318,7 @@ async function initialize() {
       await win.webContents.executeJavaScript(`document.querySelector('.exp-map-node[data-node-id="${experimentChecks.experimentCloseNodeId}"] .exp-node-main').click()`);
       await waitFor(`Boolean(document.querySelector('textarea[aria-label="实验过程与结果"]'))`);
       await win.webContents.executeJavaScript(`(()=>{const input=document.querySelector('textarea[aria-label="实验过程与结果"]');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(input,'Experiment close flush sentinel');input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+      await win.webContents.executeJavaScript(`(()=>{const input=document.querySelector('.exp-map-node[data-node-id="${experimentChecks.experimentCloseNodeId}"] textarea');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(input,'Progress close flush sentinel');input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
       win.close();
     } else { closeApproved = true; app.quit(); }
   }

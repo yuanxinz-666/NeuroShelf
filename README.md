@@ -6,7 +6,7 @@
 
 NeuroShelf is a Windows research workspace with English and Simplified Chinese interfaces. It grew from an SC–SNr / Pitx2 literature map into a project library, PDF reader, AI reading assistant, PI directory and experiment notebook. Create separate projects for other research questions.
 
-[Download for Windows · 0.8.1](https://github.com/yuanxinz-666/NeuroShelf/releases/download/v0.8.1/NeuroShelf-0.8.1-Windows.exe) · [All releases](https://github.com/yuanxinz-666/NeuroShelf/releases) · [User guide](docs/USAGE.en.md) · [Report an issue](https://github.com/yuanxinz-666/NeuroShelf/issues)
+[Download for Windows · 0.8.2](https://github.com/yuanxinz-666/NeuroShelf/releases/download/v0.8.2/NeuroShelf-0.8.2-Windows.exe) · [All releases](https://github.com/yuanxinz-666/NeuroShelf/releases) · [User guide](docs/USAGE.en.md) · [Report an issue](https://github.com/yuanxinz-666/NeuroShelf/issues)
 
 ## From reading to experiments
 
@@ -25,6 +25,8 @@ NeuroShelf is a Windows research workspace with English and Simplified Chinese i
 ### Experiment progress
 
 Break a research question into experiments and substeps. Open a node to review its records and evidence images, and follow its progress from planned to in progress, completed or blocked.
+
+Write a short current-progress summary directly beneath each step title. Resize project navigation, library information, experiment details and the reading sidebar independently; the app remembers your widths.
 
 ![Experiment mind map in English, showing an isolated test project](docs/screenshots/experiments-en.png)
 
@@ -46,7 +48,7 @@ Switching languages preserves the current page and editing drafts. Paper text, t
 
 ## Use on Windows
 
-1. Download `NeuroShelf-0.8.1-Windows.exe` from [Releases](https://github.com/yuanxinz-666/NeuroShelf/releases/latest), keep it in a permanent folder and double-click it.
+1. Download `NeuroShelf-0.8.2-Windows.exe` from [Releases](https://github.com/yuanxinz-666/NeuroShelf/releases/latest), keep it in a permanent folder and double-click it.
 2. Open the sample project or create your own. Import PDFs you have downloaded and link them to the corresponding papers.
 3. Configure a connection in **Settings & AI** when you want AI assistance. Local reading, notes and experiment records work independently.
 
@@ -78,11 +80,11 @@ pnpm test:desktop
 # Build release/win-unpacked/NeuroShelf.exe
 pnpm package
 
-# Build release/NeuroShelf-0.8.1-Windows.exe
+# Build release/NeuroShelf-0.8.2-Windows.exe
 pnpm dist
 
 # Verify the portable executable
-node scripts/smoke-desktop.cjs release/NeuroShelf-0.8.1-Windows.exe
+node scripts/smoke-desktop.cjs release/NeuroShelf-0.8.2-Windows.exe
 ```
 
 `pnpm dev` runs the frontend preview only. Verify native file, PDF and AI integration in Electron. Source launches use the same application data location by default; set `NEUROSHELF_DATA_DIR` to a temporary directory for isolated development.

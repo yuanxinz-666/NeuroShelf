@@ -22,6 +22,7 @@ child.on('exit', code => {
   clearTimeout(timer); console.log(output.trim());
   if (code !== 0 || !fs.existsSync(path.join(dataDir, 'smoke-result.json'))) { console.error(errors.slice(-8000)); const failure = path.join(dataDir, 'smoke-error.txt'); if (fs.existsSync(failure)) console.error(fs.readFileSync(failure, 'utf8')); process.exitCode = 1; return; }
   const report = JSON.parse(fs.readFileSync(path.join(dataDir, 'smoke-result.json'), 'utf8'));
+  if (!report.adjustableSidebars || !report.experimentProgress) { console.error('Resizable sidebars or inline experiment progress failed'); process.exitCode = 1; return; }
   if (!report.projectLocation) { console.error('Existing project folder, PI follows or detailed profiles did not survive the switch'); process.exitCode = 1; return; }
   if (!report.languages) { console.error('Language defaults, switching or persistence failed'); process.exitCode = 1; return; }
   if (!report.experiments) { console.error('Experiment workflows failed'); process.exitCode = 1; return; }
@@ -33,6 +34,7 @@ child.on('exit', code => {
   if (!report.bridge || report.papers !== 107 || !report.pdfRendered || !report.clipboard || !report.shortcut || !report.membership || !report.reasoningEffort || report.effortSelection !== 'xhigh' || !report.annotations || !report.resizeSidebar || !report.readerPersistence || report.modelSelection !== 'gpt-6-astra') { console.error('Packaged rendering, clipboard, shortcut or membership validation failed'); process.exitCode = 1; return; }
   console.log('PACKAGED_ARTIFACTS_OK: bridge, 107 papers, PDF rendering, clipboard, Space shortcut, membership, fixed GPT-6 and reasoning effort.');
   const library = JSON.parse(fs.readFileSync(path.join(dataDir, 'projects/SC-SNr/library/library.json'), 'utf8'));
+  if (!library.experiments?.nodes.some(n => n.progress === 'Progress close flush sentinel')) { console.error('Close flush did not persist the latest inline experiment progress'); process.exitCode = 1; return; }
   if (!library.experiments?.nodes.some(n => n.record === 'Experiment close flush sentinel')) { console.error('Close flush did not persist the latest experiment record'); process.exitCode = 1; return; }
   if (!library.papers.some(p => p.title === 'reader-verification' && p.note === 'Desktop close flush sentinel')) { console.error('Close flush did not persist the latest note'); process.exitCode = 1; return; }
   if (!library.papers.some(p => p.title === 'reader-verification' && p.highlights.some(h => h.comment === 'Annotation close flush sentinel'))) { console.error('Close flush did not persist the latest annotation'); process.exitCode = 1; return; }
