@@ -3,6 +3,7 @@ const projectId = ipcRenderer.sendSync('project:identity');
 const call = channel => (...args) => ipcRenderer.invoke(channel, projectId, ...args);
 contextBridge.exposeInMainWorld('neuroshelf', {
   desktop: true,
+  chooseProjectRoot: call('projects:choose-root'),
   weeklySync: call('weekly:sync'),
   weeklyDecide: call('weekly:decide'),
   projects: call('projects:list'), createProject: call('projects:create'), updateProject: call('projects:update'), switchProject: call('projects:activate'), openProject: call('projects:folder'), updatePerson: call('people:update'),

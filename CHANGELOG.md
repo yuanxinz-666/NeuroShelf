@@ -1,5 +1,14 @@
 # 更新记录
 
+## 0.8.1 · 2026-09-08
+
+Fix project storage selection after Windows updates. The running app now persists its own verified project location. Backup & transfer shows the active path and can reopen an existing project folder without replacing either library. An unavailable remembered folder no longer creates a fresh sample library.
+
+- 修复独立启动时未沿用原资料路径、显示初始 PI 名单的问题。
+- 软件自身保存并验证项目资料位置；新增已有资料夹打开入口。
+- 原目录无法访问时明确报错，保留原资料和路径。
+- 新增旧 PI 名单、关注、完整档案与论文数据的目录切换和重启回归检查。
+
 ## 0.8.0 · 2026-09-07
 
 English and Simplified Chinese now share one Windows app. The first launch defaults to English; a user's choice persists across restarts, updates and project switches. AI response language can be selected independently, and reading guides can be translated into English in the sidebar without changing their source text. The repository now has an English homepage and bilingual user guides.

@@ -31,21 +31,30 @@ async function atomicJson(file, data) {
   await renameWithRetry(temp, file);
 }
 async function resolveRoot(userData) {
+  let config;
   try {
-    const config = JSON.parse(await fs.readFile(path.join(userData, 'projects-location.json'), 'utf8'));
-    if (!path.isAbsolute(config.directory || '')) throw new Error('项目资料目录必须为绝对路径。');
-    return path.resolve(config.directory);
+    config = JSON.parse(await fs.readFile(path.join(userData, 'projects-location.json'), 'utf8'));
   } catch (e) { if (e.code !== 'ENOENT') throw e; return path.join(userData, 'projects'); }
+  if (!path.isAbsolute(config.directory || '')) throw new Error('项目资料目录必须为绝对路径。');
+  const directory = path.resolve(config.directory);
+  // A remembered folder must never turn into a fresh sample library when unavailable.
+  try { await fs.access(path.join(directory, 'index.json')); }
+  catch { throw new Error('已保存的项目资料夹无法读取。请检查磁盘或同步状态；现有资料未被覆盖。'); }
+  return directory;
 }
 class ProjectManager {
-  constructor({ userData, seedPath, root }) { Object.assign(this, { userData, seedPath, root }); this.contexts = new Map(); this.queue = Promise.resolve(); }
+  constructor({ userData, seedPath, root, existingOnly = false }) { Object.assign(this, { userData, seedPath, root, existingOnly }); this.contexts = new Map(); this.queue = Promise.resolve(); }
   enqueue(action) { const work = this.queue.then(action); this.queue = work.catch(() => {}); return work; }
   async init() {
     this.root ||= await resolveRoot(this.userData);
+    if (this.existingOnly) {
+      try { await fs.access(path.join(this.root, 'index.json')); }
+      catch { throw new Error('请选择已有 NeuroShelf 项目资料夹，其中应包含 index.json。'); }
+    }
     await fs.mkdir(this.root, { recursive: true });
     try { this.index = JSON.parse(await fs.readFile(path.join(this.root, 'index.json'), 'utf8')); }
     catch (e) {
-      if (e.code !== 'ENOENT') throw e;
+      if (e.code !== 'ENOENT' || this.existingOnly) throw e;
       // Commit the index last. An interrupted first migration can resume from its completed folder.
       const project = await this.initializeDefault();
       this.index = { format: 'neuroshelf-projects', version: 1, activeId: project.id, projects: [{ id: project.id, folder: 'SC-SNr' }] };
@@ -94,6 +103,19 @@ class ProjectManager {
     return project;
   }
   async makeFolders(directory) { for (const sub of ['library/pdfs', 'inbox/papers', 'inbox/people', 'reports', 'downloads', 'resources']) await fs.mkdir(path.join(directory, sub), { recursive: true }); }
+  async rememberRoot() {
+    // The running desktop app owns this write: external development tools may have
+    // a different Windows packaged-app view of AppData.
+    await fs.mkdir(this.userData, { recursive: true });
+    await atomicJson(path.join(this.userData, 'projects-location.json'), { directory: this.root, configuredAt: new Date().toISOString() });
+  }
+  async prepareExistingRoot(directory) {
+    if (!path.isAbsolute(directory || '')) throw new Error('项目资料目录必须为绝对路径。');
+    const next = new ProjectManager({ userData: this.userData, seedPath: this.seedPath, root: path.resolve(directory), existingOnly: true });
+    await next.init();
+    for (const entry of next.index.projects) await next.open(entry.id);
+    return next;
+  }
   list() { return { activeId: this.index.activeId, root: this.root, projects: [...this.contexts.values()].map(c => ({ ...structuredClone(c.project), directory: c.directory })) }; }
   get(id = this.index.activeId) { const context = this.contexts.get(id); if (!context) throw new Error('项目不存在。'); return context; }
   async open(id) {

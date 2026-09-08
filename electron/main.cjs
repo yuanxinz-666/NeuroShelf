@@ -56,6 +56,7 @@ async function initialize() {
   await uiPreferences.init();
   projects = new ProjectManager({ userData: app.getPath('userData'), seedPath: path.join(app.getAppPath(), 'data/library.json') });
   await projects.init();
+  await projects.rememberRoot();
   const seedPeople = require('../data/sc-snr-people.json');
   const sc = await projects.open('sc-snr');
   await require('./people.cjs').publishPeople(path.join(sc.directory, 'inbox', 'people'), seedPeople);
@@ -104,6 +105,21 @@ async function initialize() {
       await Promise.allSettled([...activeTasks]);
       await getContext().sync; await getStore().queue;
       return await projects.activate(id);
+    } finally { switching = false; }
+  });
+  register('projects:choose-root', async () => {
+    const chosen = await dialog.showOpenDialog(win, { title: tr('打开已有项目资料夹'), properties: ['openDirectory'] });
+    if (chosen.canceled || !chosen.filePaths.length) return null;
+    switching = true;
+    try {
+      for (const controller of activeRequests.values()) controller.abort();
+      await Promise.allSettled([...activeTasks]);
+      await research.close();
+      for (const context of projects.contexts.values()) { await context.sync; await context.store?.queue; }
+      const next = await projects.prepareExistingRoot(chosen.filePaths[0]);
+      await next.rememberRoot();
+      projects = next;
+      return projects.list();
     } finally { switching = false; }
   });
   settingsFile = path.join(app.getPath('userData'), 'settings.json');
@@ -254,6 +270,7 @@ async function initialize() {
       for (let tries = 0; tries < 100; tries++) { if (await win.webContents.executeJavaScript(condition)) return; await new Promise(resolve => setTimeout(resolve, 100)); }
       throw new Error('Language UI condition timed out: ' + condition);
     };
+    const locationChecks = await require('./project-location-smoke.cjs').runProjectLocationSmoke({ win, projects, directory: app.getPath('userData'), waitFor: languageWaitFor });
     const languageChecks = await require('./language-smoke.cjs').runLanguageSmoke({ win, directory: app.getPath('userData'), waitFor: languageWaitFor });
     const result = await win.webContents.executeJavaScript(`(async()=>({title:document.title, text:document.body.innerText, bridge:Boolean(window.neuroshelf), keyExposed:'key' in await window.neuroshelf.settings()}))()`);
     await win.webContents.executeJavaScript(`window.neuroshelf.copyText('NeuroShelf clipboard verification')`);
@@ -289,7 +306,7 @@ async function initialize() {
       console.log('PDF_RENDER_OK: local PDF bytes, worker, canvas and selectable text work in the desktop app.');
       const shortcuts = await require('./shortcut-smoke.cjs').runShortcutSmoke({ win, store: getStore(), waitFor, register, codex, getEffort: () => prefs.effort });
       const readerChecks = await require('./reader-smoke.cjs').runReaderSmoke({ win, store: getStore(), waitFor, directory: app.getPath('userData') });
-      await fs.writeFile(path.join(app.getPath('userData'), 'smoke-result.json'), JSON.stringify({ bridge: true, papers: 107, pdfRendered: true, clipboard: true, ...languageChecks, ...shortcuts, ...readerChecks, ...weeklyChecks, ...projectChecks, ...reviewChecks, ...experimentChecks }));
+      await fs.writeFile(path.join(app.getPath('userData'), 'smoke-result.json'), JSON.stringify({ bridge: true, papers: 107, pdfRendered: true, clipboard: true, ...locationChecks, ...languageChecks, ...shortcuts, ...readerChecks, ...weeklyChecks, ...projectChecks, ...reviewChecks, ...experimentChecks }));
       await win.webContents.executeJavaScript(`[...document.querySelectorAll('.document-tabs button')].find(b=>b.textContent.includes('我的笔记')).click()`);
       await waitFor(`Boolean(document.querySelector('textarea[aria-label="论文笔记"]'))`);
       await win.webContents.executeJavaScript(`(()=>{const input=document.querySelector('textarea[aria-label="论文笔记"]');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(input,'Desktop close flush sentinel');input.dispatchEvent(new Event('input',{bubbles:true}));})()`);

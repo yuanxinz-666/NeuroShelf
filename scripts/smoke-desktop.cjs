@@ -22,6 +22,7 @@ child.on('exit', code => {
   clearTimeout(timer); console.log(output.trim());
   if (code !== 0 || !fs.existsSync(path.join(dataDir, 'smoke-result.json'))) { console.error(errors.slice(-8000)); const failure = path.join(dataDir, 'smoke-error.txt'); if (fs.existsSync(failure)) console.error(fs.readFileSync(failure, 'utf8')); process.exitCode = 1; return; }
   const report = JSON.parse(fs.readFileSync(path.join(dataDir, 'smoke-result.json'), 'utf8'));
+  if (!report.projectLocation) { console.error('Existing project folder, PI follows or detailed profiles did not survive the switch'); process.exitCode = 1; return; }
   if (!report.languages) { console.error('Language defaults, switching or persistence failed'); process.exitCode = 1; return; }
   if (!report.experiments) { console.error('Experiment workflows failed'); process.exitCode = 1; return; }
   if (!report.personalReviews) { console.error('Personal review workflows failed'); process.exitCode = 1; return; }

@@ -1,4 +1,4 @@
-# NeuroShelf 0.8.0 使用说明
+# NeuroShelf 0.8.1 使用说明
 
 [English](USAGE.en.md) · **简体中文** · [项目首页](../README.zh-CN.md)
 
@@ -14,11 +14,17 @@
 
 ## 打开与升级
 
-从 [官方仓库 Releases](https://github.com/yuanxinz-666/NeuroShelf/releases) 下载 `NeuroShelf-0.8.0-Windows.exe`。这是 Windows x64 免安装版，将文件放在固定位置后双击运行。第一次打开会先解包，后续的文库保存在本机应用数据目录。
+从 [官方仓库 Releases](https://github.com/yuanxinz-666/NeuroShelf/releases) 下载 `NeuroShelf-0.8.1-Windows.exe`。这是 Windows x64 免安装版，将文件放在固定位置后双击运行。第一次打开会先解包，后续的文库保存在本机应用数据目录。
 
 需要桌面入口时，可以右键 EXE，在 Windows 的“显示更多选项 → 发送到 → 桌面快捷方式”中创建。已有的开发目录快捷方式可以继续使用，不必重复导入文库。
 
 已有用户更新前可先通过“备份与迁移”导出当前项目。退出旧版后打开新版，在同一 Windows 账号、相同应用数据配置下会继续读取现有文库。文库与 EXE 分开保存；将 EXE 复制到另一台电脑不会带走文库。
+
+## 升级后的项目资料位置
+
+打开“备份与迁移”，查看“当前项目资料位置”。PI 数量、关注、详细档案、PDF 和实验记录都属于这个资料夹。如果升级后看到的是初始示例文库，点击“打开已有项目资料夹”，选择含 `index.json` 和各项目子文件夹的原资料夹。软件验证后会通过自身的 Windows 进程保存路径，并重新载入文库；语言和 AI 连接偏好保留。
+
+这个操作切换资料位置，不自动合并或删除两边的记录。两边都有新编辑时，请先分别备份。已保存的目录无法访问时，本版会明确报错，不再创建替代示例库；恢复磁盘或目录位置后重试。
 
 ## 项目与文库
 
@@ -99,7 +105,7 @@ resources/                补充资料
 发布页同时提供 `SHA256SUMS.txt`，可在 PowerShell 中计算并对照：
 
 ```powershell
-Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.8.0-Windows.exe'
+Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.8.1-Windows.exe'
 ```
 
 遇到问题请在 [GitHub Issues](https://github.com/yuanxinz-666/NeuroShelf/issues) 说明版本、操作步骤和错误提示。截图与日志如包含个人笔记或研究数据，请先自行去除再公开。

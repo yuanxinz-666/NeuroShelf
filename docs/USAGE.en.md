@@ -1,4 +1,4 @@
-# NeuroShelf 0.8.0 user guide
+# NeuroShelf 0.8.1 user guide
 
 **English** · [简体中文](USAGE.zh-CN.md) · [Project home](../README.md)
 
@@ -14,11 +14,17 @@ Language preferences are stored in `%APPDATA%\NeuroShelf\preferences.json`, sepa
 
 ## Open and update
 
-Download `NeuroShelf-0.8.0-Windows.exe` from the [repository's Releases](https://github.com/yuanxinz-666/NeuroShelf/releases). Keep the portable Windows x64 executable in a permanent folder and double-click it. The app extracts when launched; its library is stored separately in local application data.
+Download `NeuroShelf-0.8.1-Windows.exe` from the [repository's Releases](https://github.com/yuanxinz-666/NeuroShelf/releases). Keep the portable Windows x64 executable in a permanent folder and double-click it. The app extracts when launched; its library is stored separately in local application data.
 
 To create a desktop shortcut, right-click the EXE and use Windows' **Show more options → Send to → Desktop (create shortcut)**. When updating, point an existing shortcut to the new executable.
 
 Existing users can export a project backup before updating. Exit the old version and open the new one under the same Windows account and application data configuration to keep using the library. Copying only the EXE to another computer does not transfer your papers or notes.
+
+## Project storage after an update
+
+Open **Backup & transfer** to see **Current project storage location**. PI counts, follows, detailed profiles, PDFs and experiments belong to that project folder. If an update shows the initial sample library instead, choose **Open existing project storage folder** and select the existing folder containing `index.json` and the project subfolders. The app validates it, saves the location through its own Windows process and reloads the library. Language and AI connection preferences remain unchanged.
+
+This opens the selected folder without merging or deleting either library. Keep backups of both if you have edited both locations. A remembered folder that becomes unavailable now produces an error instead of creating a replacement sample library. Reconnect its drive or restore its location and retry.
 
 ## Projects and papers
 
@@ -99,7 +105,7 @@ For a complete move to another Windows computer, exit the app and copy the whole
 Compare the release's `SHA256SUMS.txt` with the hash produced by PowerShell:
 
 ```powershell
-Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.8.0-Windows.exe'
+Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.8.1-Windows.exe'
 ```
 
 For problems, open a [GitHub issue](https://github.com/yuanxinz-666/NeuroShelf/issues) with the version, reproduction steps and error message. Remove personal research content from screenshots or logs before posting them publicly.
