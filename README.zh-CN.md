@@ -6,7 +6,7 @@
 
 NeuroShelf 是一款支持英文和简体中文的 Windows 科研工作台。从 SC–SNr / Pitx2 文献地图出发，逐步扩展为项目文库、PDF 精读、AI 阅读助手、PI 档案和实验记录工具。可以为其他研究问题新建独立项目。
 
-[下载 Windows 0.9.1](https://github.com/yuanxinz-666/NeuroShelf/releases/download/v0.9.1/NeuroShelf-0.9.1-Windows.exe) · [全部发布版本](https://github.com/yuanxinz-666/NeuroShelf/releases) · [使用说明](docs/USAGE.zh-CN.md) · [反馈问题](https://github.com/yuanxinz-666/NeuroShelf/issues)
+[下载 Windows 0.10.0](https://github.com/yuanxinz-666/NeuroShelf/releases/download/v0.10.0/NeuroShelf-0.10.0-Windows.exe) · [全部发布版本](https://github.com/yuanxinz-666/NeuroShelf/releases) · [使用说明](docs/USAGE.zh-CN.md) · [反馈问题](https://github.com/yuanxinz-666/NeuroShelf/issues)
 
 ## 从阅读到实验
 
@@ -30,11 +30,19 @@ NeuroShelf 是一款支持英文和简体中文的 Windows 科研工作台。从
 
 ## 中英文使用
 
-首次打开 0.9.1 时默认为英文。顶部的 **English / 简体中文** 菜单可立即切换，选择会自动保存，重启、升级或切换项目后继续沿用。在 **Settings & AI → Language** 中可以单独设置 AI 回答语言，默认跟随界面。
+首次打开 0.10.0 时默认为英文。顶部的 **English / 简体中文** 菜单可立即切换，选择会自动保存，重启、升级或切换项目后继续沿用。在 **Settings & AI → Language** 中可以单独设置 AI 回答语言，默认跟随界面。
 
 界面切换不会翻译或覆盖论文标题、导读、个人评价、笔记、PI 资料和实验记录。已有示例导读保留中文；文献导读页的 **Translate guide into English / 翻译导读为英文** 会通过当前 AI 连接生成英文译文，显示在侧栏中，保留原文。
 
 每个实验导图卡片可直接填写当前进展，自动保存并支持搜索和导出。项目导航、文库信息、实验详情和阅读侧栏都可拖动调整宽度，分别记住设置。
+
+### 为每个实验整理参考论文
+
+进入 **实验进程**，选择 behaviour 等实验步骤，在 **实验参考文献 → 关联论文** 中从当前文库批量选择论文。用途可多选：实验思路、操作方法、对照设计、数据分析、结果解释、背景依据；每篇论文都能写下对这一步的具体帮助，并自动保存。
+
+同一篇论文可用于多个实验，各自保存用途说明。点击关联论文可打开 PDF 或导读，返回时保留原实验步骤。文库支持按实验和用途筛选，父实验包含子步骤的论文；也能直接从论文卡片关联到实验。搜索框可以搜索实验名称与用途说明。
+
+![隔离测试项目中的实验参考文献](docs/screenshots/experiment-references-en.png)
 
 ### 实验进程
 
@@ -52,7 +60,7 @@ NeuroShelf 是一款支持英文和简体中文的 Windows 科研工作台。从
 
 ## 在 Windows 上使用
 
-1. 从 [Releases](https://github.com/yuanxinz-666/NeuroShelf/releases/latest) 下载 `NeuroShelf-0.9.1-Windows.exe`，放到一个固定文件夹后双击打开。
+1. 从 [Releases](https://github.com/yuanxinz-666/NeuroShelf/releases/latest) 下载 `NeuroShelf-0.10.0-Windows.exe`，放到一个固定文件夹后双击打开。
 2. 打开示例项目，或通过侧栏新建项目。将自己下载的 PDF 导入并关联到对应论文。
 3. 在“设置与 AI 连接”中选择连接方式；本地阅读、笔记和实验记录可以独立使用。
 
@@ -84,11 +92,11 @@ pnpm test:desktop
 # 生成 release/win-unpacked/NeuroShelf.exe
 pnpm package
 
-# 生成 release/NeuroShelf-0.9.1-Windows.exe
+# 生成 release/NeuroShelf-0.10.0-Windows.exe
 pnpm dist
 
 # 检查生成的单文件包
-node scripts/smoke-desktop.cjs release/NeuroShelf-0.9.1-Windows.exe
+node scripts/smoke-desktop.cjs release/NeuroShelf-0.10.0-Windows.exe
 ```
 
 `pnpm dev` 仅启动前端开发服务器；完整的本地文件、PDF 和 AI 能力请通过 Electron 桌面程序验证。源码运行默认使用同名应用的数据目录；调试时可先设置 `NEUROSHELF_DATA_DIR` 指向临时目录。

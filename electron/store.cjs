@@ -29,7 +29,7 @@ function validateLibrary(raw) {
   }
   if (raw.weekly) validateWeekly(raw.weekly);
   if (raw.people) validatePeople(raw.people);
-  if (raw.experiments) validateExperiments(raw.experiments);
+  if (raw.experiments) validateExperiments(raw.experiments, raw.papers);
   if (raw.projectId && !/^[a-z0-9-]{1,80}$/.test(raw.projectId)) throw new Error('项目编号无效。');
   return raw;
 }

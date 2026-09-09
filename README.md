@@ -6,7 +6,7 @@
 
 NeuroShelf is a Windows research workspace with English and Simplified Chinese interfaces. It grew from an SC–SNr / Pitx2 literature map into a project library, PDF reader, AI reading assistant, PI directory and experiment notebook. Create separate projects for other research questions.
 
-[Download for Windows · 0.9.1](https://github.com/yuanxinz-666/NeuroShelf/releases/download/v0.9.1/NeuroShelf-0.9.1-Windows.exe) · [All releases](https://github.com/yuanxinz-666/NeuroShelf/releases) · [User guide](docs/USAGE.en.md) · [Report an issue](https://github.com/yuanxinz-666/NeuroShelf/issues)
+[Download for Windows · 0.10.0](https://github.com/yuanxinz-666/NeuroShelf/releases/download/v0.10.0/NeuroShelf-0.10.0-Windows.exe) · [All releases](https://github.com/yuanxinz-666/NeuroShelf/releases) · [User guide](docs/USAGE.en.md) · [Report an issue](https://github.com/yuanxinz-666/NeuroShelf/issues)
 
 ## From reading to experiments
 
@@ -21,6 +21,14 @@ NeuroShelf is a Windows research workspace with English and Simplified Chinese i
 | Track experiments | A tree-shaped mind map and step list, status, dates, records, next actions, image evidence, archiving and restoration |
 | Keep your work | Autosave, per-project backups including PDFs and evidence images, and Markdown export |
 | Choose your language | English by default, a remembered Chinese/English choice and a separate AI response language |
+
+### Papers for each experiment
+
+Open **Experiments**, choose a step such as **behaviour**, and click **Link papers** under **Experiment references**. Select several papers from the current project and assign one or more purposes: experimental ideas, protocol and methods, control design, data analysis, interpretation or background evidence. Each reference has an autosaved note explaining how it helps that particular step.
+
+The same paper can support several experiments with different notes. Open a reference to read its PDF or guide, then return to the selected experiment. In the library, use the experiment and purpose filters; parent experiments include their substeps. Each paper card also provides a way to link the paper to an experiment. The search box matches experiment names and reference notes.
+
+![Experiment references with purpose notes in an isolated test project](docs/screenshots/experiment-references-en.png)
 
 ### Focus on the paper
 
@@ -54,7 +62,7 @@ Switching languages preserves the current page and editing drafts. Paper text, t
 
 ## Use on Windows
 
-1. Download `NeuroShelf-0.9.1-Windows.exe` from [Releases](https://github.com/yuanxinz-666/NeuroShelf/releases/latest), keep it in a permanent folder and double-click it.
+1. Download `NeuroShelf-0.10.0-Windows.exe` from [Releases](https://github.com/yuanxinz-666/NeuroShelf/releases/latest), keep it in a permanent folder and double-click it.
 2. Open the sample project or create your own. Import PDFs you have downloaded and link them to the corresponding papers.
 3. Configure a connection in **Settings & AI** when you want AI assistance. Local reading, notes and experiment records work independently.
 
@@ -86,11 +94,11 @@ pnpm test:desktop
 # Build release/win-unpacked/NeuroShelf.exe
 pnpm package
 
-# Build release/NeuroShelf-0.9.1-Windows.exe
+# Build release/NeuroShelf-0.10.0-Windows.exe
 pnpm dist
 
 # Verify the portable executable
-node scripts/smoke-desktop.cjs release/NeuroShelf-0.9.1-Windows.exe
+node scripts/smoke-desktop.cjs release/NeuroShelf-0.10.0-Windows.exe
 ```
 
 `pnpm dev` runs the frontend preview only. Verify native file, PDF and AI integration in Electron. Source launches use the same application data location by default; set `NEUROSHELF_DATA_DIR` to a temporary directory for isolated development.

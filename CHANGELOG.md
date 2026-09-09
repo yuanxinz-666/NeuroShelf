@@ -1,5 +1,14 @@
 # 更新记录
 
+## 0.10.0 · 2026-09-09
+
+Connect papers to experiment steps with multiple purpose categories and individual notes. Add references in batches from the experiment sidebar or link from a paper card. Library filters include substeps and keep purpose notes specific to each experiment. Links survive backups, archives and restarts, support undo/redo, and appear in experiment Markdown exports.
+
+- 每个实验步骤新增参考文献，可批量关联文库论文，分类记录思路、方法、对照、分析、解释和背景依据。
+- 同一论文可关联多个实验，独立保存用途说明；阅读后返回原实验。
+- 文库支持按实验（含子步骤）和用途筛选，也能搜索实验名与用途说明。
+- 关联支持自动保存、关闭前保存、失败重试、撤销与重做、完整备份和 Markdown 导出。
+
 ## 0.9.1 · 2026-09-08
 
 Focus reading now displays the complete PDF as a continuous document. A persistent bottom pager supports previous/next and direct page entry. Hovering at the right edge opens the AI sidebar without submitting a request. Scrolling updates the reading position and AI page context; highlights remain anchored to their original pages. Pages are rendered near the viewport to limit memory use.

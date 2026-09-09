@@ -28,7 +28,8 @@ function changesBetween(before, after) {
   }
   entities('experiment', before.experiments?.nodes, after.experiments?.nodes, nodeFields);
   for (const a of before.experiments?.nodes || []) {
-    const b = after.experiments?.nodes.find(n => n.id === a.id); if (b) entities('evidence', a.evidence, b.evidence, ['caption'], a.id);
+    const b = after.experiments?.nodes.find(n => n.id === a.id);
+    if (b) { entities('evidence', a.evidence, b.evidence, ['caption'], a.id); entities('reference', a.references, b.references, ['roles', 'note'], a.id); }
   }
   // Research can refresh the other profile fields independently of personal follows and notes.
   for (const a of before.people?.profiles || []) {
@@ -42,6 +43,7 @@ function collection(library, change) {
   if (change.kind === 'experiment') { library.experiments ||= { version: 1, nodes: [] }; return library.experiments.nodes; }
   if (change.kind === 'highlight') { const parent = library.papers.find(p => p.id === change.parentId); if (parent) return parent.highlights ||= []; }
   if (change.kind === 'evidence') return library.experiments?.nodes.find(n => n.id === change.parentId)?.evidence;
+  if (change.kind === 'reference') { const parent = library.experiments?.nodes.find(n => n.id === change.parentId); if (parent) return parent.references ||= []; }
 }
 function applyChanges(library, changes, direction) {
   const next = copy(library), expected = direction === 'undo' ? 'after' : 'before', desired = direction === 'undo' ? 'before' : 'after';
@@ -58,7 +60,7 @@ function applyChanges(library, changes, direction) {
     } else if (change[desired] === undefined) list.splice(index, 1);
     else if (index < 0) list.push({ ...copy(change[desired]), updatedAt: new Date().toISOString() });
     else list[index] = { ...copy(change[desired]), updatedAt: new Date().toISOString() };
-    const parent = change.kind === 'highlight' ? next.papers.find(p => p.id === change.parentId) : change.kind === 'evidence' ? next.experiments.nodes.find(n => n.id === change.parentId) : null;
+    const parent = change.kind === 'highlight' ? next.papers.find(p => p.id === change.parentId) : ['evidence','reference'].includes(change.kind) ? next.experiments.nodes.find(n => n.id === change.parentId) : null;
     if (parent) parent.updatedAt = new Date().toISOString();
   }
   return next;

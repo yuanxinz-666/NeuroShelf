@@ -1,4 +1,4 @@
-# NeuroShelf 0.9.1 user guide
+# NeuroShelf 0.10.0 user guide
 
 **English** · [简体中文](USAGE.zh-CN.md) · [Project home](../README.md)
 
@@ -14,7 +14,7 @@ Language preferences are stored in `%APPDATA%\NeuroShelf\preferences.json`, sepa
 
 ## Open and update
 
-Download `NeuroShelf-0.9.1-Windows.exe` from the [repository's Releases](https://github.com/yuanxinz-666/NeuroShelf/releases). Keep the portable Windows x64 executable in a permanent folder and double-click it. The app extracts when launched; its library is stored separately in local application data.
+Download `NeuroShelf-0.10.0-Windows.exe` from the [repository's Releases](https://github.com/yuanxinz-666/NeuroShelf/releases). Keep the portable Windows x64 executable in a permanent folder and double-click it. The app extracts when launched; its library is stored separately in local application data.
 
 To create a desktop shortcut, right-click the EXE and use Windows' **Show more options → Send to → Desktop (create shortcut)**. When updating, point an existing shortcut to the new executable.
 
@@ -55,6 +55,14 @@ Configure AI in **Settings & AI**:
 This version uses the GPT-6 Astra model configuration and offers low, medium, high, xhigh, max and ultra reasoning effort. The connection checks available model and effort capabilities. Visible options do not grant access your account lacks. An effort change applies to the next question; an answer in progress retains its original effort.
 
 Questions include selected text, page context and recent conversation. Images and related pages are attached only when you choose them. Local reading, reviews, notes and experiment records do not require AI. Windows encrypts the API key locally; it is not included in library backups.
+
+## Papers for each experiment
+
+Open **Experiments**, choose a step such as **behaviour**, and click **Link papers** under **Experiment references**. Select several papers from the current project and assign one or more purposes: experimental ideas, protocol and methods, control design, data analysis, interpretation or background evidence. Each reference has an autosaved note explaining how it helps that particular step.
+
+The same paper can support several experiments with different notes. Open a reference to read its PDF or guide, then return to the selected experiment. In the library, use the experiment and purpose filters; parent experiments include their substeps. Each paper card also provides a way to link the paper to an experiment. The search box matches experiment names and reference notes.
+
+References and purpose notes are included in complete backups and experiment Markdown exports. Unlinking a reference keeps the paper, PDF and reading notes. Ctrl S saves; Ctrl Z / Ctrl Y undo and redo reference edits. Archived steps keep their references for restoration.
 
 ## Focus reading and keyboard shortcuts
 
@@ -141,7 +149,7 @@ For a complete move to another Windows computer, exit the app and copy the whole
 Compare the release's `SHA256SUMS.txt` with the hash produced by PowerShell:
 
 ```powershell
-Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.9.1-Windows.exe'
+Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.10.0-Windows.exe'
 ```
 
 For problems, open a [GitHub issue](https://github.com/yuanxinz-666/NeuroShelf/issues) with the version, reproduction steps and error message. Remove personal research content from screenshots or logs before posting them publicly.

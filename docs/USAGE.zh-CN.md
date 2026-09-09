@@ -1,4 +1,4 @@
-# NeuroShelf 0.9.1 使用说明
+# NeuroShelf 0.10.0 使用说明
 
 [English](USAGE.en.md) · **简体中文** · [项目首页](../README.zh-CN.md)
 
@@ -14,7 +14,7 @@
 
 ## 打开与升级
 
-从 [官方仓库 Releases](https://github.com/yuanxinz-666/NeuroShelf/releases) 下载 `NeuroShelf-0.9.1-Windows.exe`。这是 Windows x64 免安装版，将文件放在固定位置后双击运行。第一次打开会先解包，后续的文库保存在本机应用数据目录。
+从 [官方仓库 Releases](https://github.com/yuanxinz-666/NeuroShelf/releases) 下载 `NeuroShelf-0.10.0-Windows.exe`。这是 Windows x64 免安装版，将文件放在固定位置后双击运行。第一次打开会先解包，后续的文库保存在本机应用数据目录。
 
 需要桌面入口时，可以右键 EXE，在 Windows 的“显示更多选项 → 发送到 → 桌面快捷方式”中创建。已有的开发目录快捷方式可以继续使用，不必重复导入文库。
 
@@ -55,6 +55,14 @@ AI 在“设置与 AI 连接”中配置：
 本版界面固定 GPT-6 Astra，并提供 low、medium、high、xhigh、max、ultra 推理强度选项。连接时会检查账号可用的模型和档位；界面选项不代表账号一定有对应权限。切换档位影响下一次提问，已经生成中的回答保留原档位。
 
 提问会发送选区、当前页文字和近期对话；图片或相关页由你主动附加。阅读、个人评价、笔记和实验记录本身无需 AI 连接。API Key 由 Windows 加密保存在本机，不包含在文库备份中。
+
+## 为每个实验整理参考论文
+
+进入 **实验进程**，选择 behaviour 等实验步骤，在 **实验参考文献 → 关联论文** 中从当前文库批量选择论文。用途可多选：实验思路、操作方法、对照设计、数据分析、结果解释、背景依据；每篇论文都能写下对这一步的具体帮助，并自动保存。
+
+同一篇论文可用于多个实验，各自保存用途说明。点击关联论文可打开 PDF 或导读，返回时保留原实验步骤。文库支持按实验和用途筛选，父实验包含子步骤的论文；也能直接从论文卡片关联到实验。搜索框可以搜索实验名称与用途说明。
+
+关联、用途说明与原记录一起进入完整备份，实验 Markdown 导出也包含参考文献。解除关联只移除实验中的引用；论文、PDF 和阅读笔记保留。Ctrl S 立即保存，Ctrl Z / Ctrl Y 可撤销和重做关联及用途编辑。归档的实验保留引用，恢复后重新显示。
 
 ## 专注阅读与快捷键
 
@@ -142,7 +150,7 @@ resources/                补充资料
 发布页同时提供 `SHA256SUMS.txt`，可在 PowerShell 中计算并对照：
 
 ```powershell
-Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.9.1-Windows.exe'
+Get-FileHash -Algorithm SHA256 -LiteralPath '.\NeuroShelf-0.10.0-Windows.exe'
 ```
 
 遇到问题请在 [GitHub Issues](https://github.com/yuanxinz-666/NeuroShelf/issues) 说明版本、操作步骤和错误提示。截图与日志如包含个人笔记或研究数据，请先自行去除再公开。

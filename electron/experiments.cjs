@@ -5,11 +5,19 @@ const MAX_IMAGE_BYTES = 20 * 1024 * 1024;
 const validId = value => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,90}$/.test(value);
 const imageName = value => typeof value === 'string' && /^[a-f0-9]{64}\.(png|jpg|webp)$/.test(value);
 const statuses = new Set(['planned', 'active', 'done', 'blocked']);
+const referenceRoles = new Set(Object.keys(require('../data/experiment-reference-roles.json')));
+function validateReference(ref) {
+  if (!ref || !validId(ref.id) || !validId(ref.paperId)) throw new Error('实验参考文献编号无效。');
+  if (!Array.isArray(ref.roles) || !ref.roles.length || ref.roles.length > referenceRoles.size || new Set(ref.roles).size !== ref.roles.length || ref.roles.some(role => !referenceRoles.has(role))) throw new Error('请选择有效的文献用途。');
+  if (typeof ref.note !== 'string' || ref.note.length > 5000) throw new Error('文献用途说明最多支持 5000 字。');
+  if (!Number.isFinite(Date.parse(ref.createdAt)) || !Number.isFinite(Date.parse(ref.updatedAt))) throw new Error('实验参考文献时间无效。');
+}
 const emptyExperiments = () => ({ version: 1, nodes: [] });
 const textLimits = { title: 180, progress: 2000, objective: 10000, record: 100000, nextStep: 10000 };
-function validateExperiments(data) {
+function validateExperiments(data, papers) {
   if (!data || data.version !== 1 || !Array.isArray(data.nodes) || data.nodes.length > 600) throw new Error('实验记录格式无效，最多支持 600 个步骤。');
   const byId = new Map();
+  const paperIds = papers && new Set(papers.map(p => p.id));
   for (const node of data.nodes) {
     if (!validId(node.id) || byId.has(node.id)) throw new Error('实验步骤编号无效或重复。');
     byId.set(node.id, node);
@@ -23,6 +31,16 @@ function validateExperiments(data) {
     if (typeof node.date !== 'string' || node.date && (!/^\d{4}-\d{2}-\d{2}$/.test(node.date) || !Number.isFinite(Date.parse(node.date)) || new Date(node.date).toISOString().slice(0, 10) !== node.date)) throw new Error('实验日期无效。');
     if (!Number.isFinite(Date.parse(node.createdAt)) || !Number.isFinite(Date.parse(node.updatedAt))) throw new Error('实验记录时间无效。');
     if (node.archived && !validId(node.archiveRoot)) throw new Error('实验归档记录无效。');
+    if (node.references !== undefined) {
+      if (!Array.isArray(node.references) || node.references.length > 200) throw new Error('每个实验步骤最多关联 200 篇论文。');
+      const refIds = new Set(), linkedPapers = new Set();
+      for (const ref of node.references) {
+        validateReference(ref);
+        if (refIds.has(ref.id) || linkedPapers.has(ref.paperId)) throw new Error('实验参考文献重复。');
+        if (paperIds && !paperIds.has(ref.paperId)) throw new Error('参考论文不在当前项目文库中。');
+        refIds.add(ref.id); linkedPapers.add(ref.paperId);
+      }
+    }
     if (!Array.isArray(node.evidence) || node.evidence.length > 60) throw new Error('每个步骤最多添加 60 张图片。');
     const ids = new Set();
     for (const item of node.evidence) {
@@ -63,7 +81,7 @@ function descendants(data, id) {
   while (changed) { changed = false; for (const n of data.nodes) if (ids.has(n.parentId) && !ids.has(n.id)) { ids.add(n.id); changed = true; } }
   return ids;
 }
-function mutate(data, change) {
+function mutate(data, change, papers) {
   if (!change || typeof change !== 'object') throw new Error('实验操作无效。');
   const now = new Date().toISOString(); let selectedId = change.id;
   if (change.action === 'add') {
@@ -76,6 +94,24 @@ function mutate(data, change) {
       const patch = change.patch;
       if (!patch || typeof patch !== 'object' || Object.keys(patch).some(k => ![...Object.keys(textLimits), 'status', 'date', 'parentId'].includes(k))) throw new Error('实验编辑内容无效。');
       Object.assign(node, patch);
+    } else if (change.action === 'link-papers') {
+      if (node.archived) throw new Error('请先恢复这条实验记录。');
+      if (!Array.isArray(change.paperIds) || !change.paperIds.length || change.paperIds.length > 200 || change.paperIds.some(id => !validId(id) || !papers.some(p => p.id === id))) throw new Error('参考论文不在当前项目文库中。');
+      node.references ||= [];
+      for (const paperId of new Set(change.paperIds)) {
+        // Repeated clicks must not overwrite an existing purpose or note.
+        if (node.references.some(ref => ref.paperId === paperId)) continue;
+        node.references.push({ id: 'ref_' + crypto.randomUUID(), paperId, roles: change.roles ?? ['idea'], note: change.note ?? '', createdAt: now, updatedAt: now });
+      }
+    } else if (change.action === 'update-reference' || change.action === 'unlink-paper') {
+      if (node.archived) throw new Error('请先恢复这条实验记录。');
+      const ref = node.references?.find(ref => ref.paperId === change.paperId);
+      if (!ref) throw new Error('这篇论文已从实验中移除。');
+      if (change.action === 'unlink-paper') node.references = node.references.filter(item => item !== ref);
+      else {
+        if (!change.patch || typeof change.patch !== 'object' || Object.keys(change.patch).some(key => !['roles', 'note'].includes(key))) throw new Error('文献用途编辑无效。');
+        Object.assign(ref, change.patch, { updatedAt: now });
+      }
     } else if (change.action === 'archive') {
       if (node.archived) throw new Error('这条实验分支已经归档。');
       const branch = descendants(data, node.id);
@@ -95,7 +131,7 @@ function mutate(data, change) {
     } else throw new Error('实验操作无效。');
     node.updatedAt = now;
   }
-  validateExperiments(data);
+  validateExperiments(data, papers);
   return selectedId;
 }
 function mergeExperiments(local, incoming) {
@@ -113,7 +149,7 @@ function installExperimentMethods(LibraryStore) {
   LibraryStore.prototype.changeExperiment = function(change) {
     return this.enqueue(async () => {
       const next = this.get(); next.experiments ||= emptyExperiments();
-      const selectedId = mutate(next.experiments, change);
+      const selectedId = mutate(next.experiments, change, next.papers);
       await this.commit(next); return { experiments: structuredClone(next.experiments), selectedId };
     });
   };

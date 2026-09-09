@@ -303,6 +303,7 @@ async function initialize() {
       const weeklyChecks = await require('./weekly-smoke.cjs').runWeeklySmoke({ win, store: getStore(), waitFor, directory: app.getPath('userData') });
       const reviewChecks = await require('./paper-review-smoke.cjs').runPaperReviewSmoke({ win, projects, waitFor, directory: app.getPath('userData') });
       const experimentChecks = await require('./experiments-smoke.cjs').runExperimentsSmoke({ win, projects, waitFor, directory: app.getPath('userData') });
+      const referenceChecks = await require('./experiment-references-smoke.cjs').runReferenceSmoke({win,store:getStore(),waitFor,directory:app.getPath('userData'),nodeId:experimentChecks.experimentCloseNodeId});
       await win.webContents.executeJavaScript(`(()=>{const input=document.querySelector('input[aria-label="搜索文献库"]');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(input,'reader-verification');input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
       await waitFor(`Boolean([...document.querySelectorAll('button.card-title')].find(b=>b.textContent==='reader-verification'))`);
       await win.webContents.executeJavaScript(`[...document.querySelectorAll('button.card-title')].find(b=>b.textContent==='reader-verification').click()`);
@@ -313,7 +314,7 @@ async function initialize() {
       const focusChecks = await require('./focus-smoke.cjs').runFocusSmoke({ win, store: getStore(), waitFor, codex, directory: app.getPath('userData') });
       const shortcuts = await require('./shortcut-smoke.cjs').runShortcutSmoke({ win, store: getStore(), waitFor, register, codex, getEffort: () => prefs.effort });
       const readerChecks = await require('./reader-smoke.cjs').runReaderSmoke({ win, store: getStore(), waitFor, directory: app.getPath('userData') });
-      await fs.writeFile(path.join(app.getPath('userData'), 'smoke-result.json'), JSON.stringify({ bridge: true, papers: 107, pdfRendered: true, clipboard: true, ...focusChecks, ...locationChecks, ...languageChecks, ...layoutChecks, ...shortcuts, ...readerChecks, ...weeklyChecks, ...projectChecks, ...reviewChecks, ...experimentChecks }));
+      await fs.writeFile(path.join(app.getPath('userData'), 'smoke-result.json'), JSON.stringify({ bridge: true, papers: 107, pdfRendered: true, clipboard: true, ...referenceChecks, ...focusChecks, ...locationChecks, ...languageChecks, ...layoutChecks, ...shortcuts, ...readerChecks, ...weeklyChecks, ...projectChecks, ...reviewChecks, ...experimentChecks }));
       await win.webContents.executeJavaScript(`[...document.querySelectorAll('.document-tabs button')].find(b=>b.textContent.includes('我的笔记')).click()`);
       await waitFor(`Boolean(document.querySelector('textarea[aria-label="论文笔记"]'))`);
       await win.webContents.executeJavaScript(`(()=>{const input=document.querySelector('textarea[aria-label="论文笔记"]');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(input,'Desktop close flush sentinel');input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
@@ -325,6 +326,7 @@ async function initialize() {
       await waitFor(`Boolean(document.querySelector('textarea[aria-label="实验过程与结果"]'))`);
       await win.webContents.executeJavaScript(`(()=>{const input=document.querySelector('textarea[aria-label="实验过程与结果"]');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(input,'Experiment close flush sentinel');input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
       await win.webContents.executeJavaScript(`(()=>{const input=document.querySelector('.exp-map-node[data-node-id="${experimentChecks.experimentCloseNodeId}"] textarea');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(input,'Progress close flush sentinel');input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+      await win.webContents.executeJavaScript(`(()=>{const input=document.querySelector('.experiment-reference[data-paper-id="p001"] textarea');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(input,'Reference close flush sentinel');input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
       win.close();
     } else { closeApproved = true; app.quit(); }
   }
